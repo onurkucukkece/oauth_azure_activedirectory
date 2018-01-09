@@ -4,10 +4,12 @@ defmodule OauthAzureActivedirectory.Mixfile do
   def project do
     [
       app: :oauth_azure_activedirectory,
-      version: "0.1.0",
+      version: "0.1.0-beta",
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
-      deps: deps()
+      deps: deps(),
+      package: package(),
+      description: description(),
     ]
   end
 
@@ -26,5 +28,23 @@ defmodule OauthAzureActivedirectory.Mixfile do
       {:json_web_token, "~> 0.2"},
       {:secure_random, "~> 0.5"},
     ]
+  end
+
+  # Package description
+  defp description do
+    """
+    Omniauth authentication for Azure Active Directory using JWT.
+    """
+  end
+
+  # Package information
+  defp package do
+    [
+     files: ["lib", "mix.exs", "README.md", "LICENSE*"],
+     maintainers: ["Onur Kucukkece"],
+     licenses: ["Apache 2.0"],
+     links: %{"GitHub" => "https://github.com/onurkucukkece/oauth_azure_activedirectory",
+              "Docs" => "https://hexdocs.pm/simple_statistics/"}
+     ]
   end
 end
