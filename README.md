@@ -1,6 +1,6 @@
 # Oauth Azure Activedirectory
 
-**TODO: Add description**
+https://hex.pm/packages/oauth_azure_activedirectory
 
 ## Installation
 
