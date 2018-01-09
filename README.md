@@ -1,4 +1,4 @@
-# OauthAzureActivedirectory
+# Oauth Azure Activedirectory
 
 **TODO: Add description**
 
@@ -13,6 +13,15 @@ def deps do
     {:oauth_azure_activedirectory, "~> 0.1.0-beta"}
   ]
 end
+```
+## Configuration
+
+```
+config :oauth_azure_activedirectory, OauthAzureActivedirectory.Client,
+  client_id: System.get_env("AZURE_CLIENT_ID"),
+  client_secret: System.get_env("AZURE_CLIENT_SECRET"),
+  tenant: System.get_env("AZURE_TENANT"),
+  redirect_uri: "http://localhost:4000/auth/azureactivedirectory/callback"
 ```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
