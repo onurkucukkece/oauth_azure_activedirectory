@@ -43,8 +43,6 @@ defmodule OauthAzureActivedirectory.Mixfile do
      files: ["lib", "mix.exs", "README.md", "LICENSE*"],
      maintainers: ["Onur Kucukkece"],
      licenses: ["Apache 2.0"],
-     links: %{"GitHub" => "https://github.com/onurkucukkece/oauth_azure_activedirectory",
-              "Docs" => "https://hexdocs.pm/simple_statistics/"}
-     ]
+     links: %{"GitHub" => "https://github.com/onurkucukkece/oauth_azure_activedirectory"]
   end
 end
