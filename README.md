@@ -1,5 +1,6 @@
 # Oauth Azure Activedirectory
 
+Omniauth authentication for Azure Active Directory using JWT.
 https://hex.pm/packages/oauth_azure_activedirectory
 
 ## Installation
@@ -10,7 +11,7 @@ by adding `oauth_azure_activedirectory` to your list of dependencies in `mix.exs
 ```elixir
 def deps do
   [
-    {:oauth_azure_activedirectory, "~> 0.1.0-beta"}
+    {:oauth_azure_activedirectory, "~> 0.1.0-beta2"}
   ]
 end
 ```
