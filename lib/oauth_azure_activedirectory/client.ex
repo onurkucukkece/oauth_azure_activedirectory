@@ -26,7 +26,7 @@ defmodule OauthAzureActivedirectory.Client do
     AuthCode.authorize_url(client, params)
   end
 
-  def process_callback!(%Plug.Conn{params: %{"id_token" => id_token}} = conn) do
+  def process_callback!(%{params: %{"id_token" => id_token}} = conn) do
     public_key = jwks_uri() |> get_discovery_keys |> get_public_key
     # verify with RSA SHA256 algorithm
     public = JsonWebToken.Algorithm.RsaUtil.public_key public_key
