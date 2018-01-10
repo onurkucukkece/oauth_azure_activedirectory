@@ -1,6 +1,7 @@
 # Oauth Azure Activedirectory
 
 Omniauth authentication for Azure Active Directory using JWT.
+
 https://hex.pm/packages/oauth_azure_activedirectory
 
 ## Installation
