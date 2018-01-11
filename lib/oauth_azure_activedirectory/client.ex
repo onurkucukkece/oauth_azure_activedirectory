@@ -48,11 +48,17 @@ defmodule OauthAzureActivedirectory.Client do
   end
 
   defp http_request(url) do
-    {:ok, resp} = :httpc.request(:get, {to_charlist(url), []}, [], [])
-    {{_, 200, 'OK'}, _headers, body} = resp
-    body
+    cacert =  :code.priv_dir(:oauth_azure_activedirectory) ++ '/BaltimoreCyberTrustRoot.crt.pem'
+    :httpc.set_options(socket_opts: [verify: :verify_peer, cacertfile: cacert])
+     
+    case :httpc.request(:get, {to_charlist(url), []}, [], []) do
+      {:ok, response} -> 
+          {{_, 200, 'OK'}, _headers, body} = response
+          body
+      {:error, response} -> false
+    end
   end
-
+  
   defp get_discovery_keys(url)do
     list_body = http_request url
     {status, list} = JSON.decode list_body
