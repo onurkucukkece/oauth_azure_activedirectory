@@ -71,8 +71,8 @@ end
 def find_or_create(jwt) do
   email = jwt[:upn]
   query = from u in User, where: u.email == ^email
-  case Repo.one(query) do
-    user -> {:ok, user}
+  case Repo.all(query) do
+    [user] -> {:ok, user}
     [] -> create_user(%{email: email, password: SecureRandom.base64(8)})
   end
 end
@@ -108,3 +108,9 @@ Client.authorize_url!(_params)
 [Azure AD token reference](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-token-and-claims)
 
 You can decode your id_token at http://jwt.ms/
+
+[Microsoft OpenID discovery document.](https://login.microsoftonline.com/common/.well-known/openid-configuration)
+
+[Microsoft Discovery Keys](https://login.microsoftonline.com/common/discovery/keys)
+
+[Trusted CA certificate for Azure Cloud Services](https://www.digicert.com/CACerts/BaltimoreCyberTrustRoot.crt.pem)
