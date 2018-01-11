@@ -56,9 +56,9 @@ defmodule OauthAzureActivedirectory.Client do
     list_body = http_request url
     {status, list} = JSON.decode list_body
 
-    if status == :ok do
-      item = Enum.at(list["keys"], 0)
-      item["x5c"]
+    case status do
+      :ok -> Enum.at(list["keys"], 0)["x5c"]
+      :error -> nil
     end
   end
 
