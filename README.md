@@ -113,4 +113,4 @@ You can decode your id_token at http://jwt.ms/
 
 [Microsoft Discovery Keys](https://login.microsoftonline.com/common/discovery/keys)
 
-[Trusted CA Certificate for Azure Cloud Services](https://www.digicert.com/CACerts/BaltimoreCyberTrustRoot.crt.pem)
+[Trusted CA certificate for Azure Cloud Services](https://www.digicert.com/CACerts/BaltimoreCyberTrustRoot.crt.pem)
