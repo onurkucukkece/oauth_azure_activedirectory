@@ -41,7 +41,7 @@ defmodule OauthAzureActivedirectory.Client do
   end
 
   defp jwks_uri do
-    body = http_request("https://login.microsoftonline.com/common/.well-known/openid-configuration")
+    body = http_request open_id_configuration()
     {status, list} = JSON.decode(body)
     if status == :ok, do: list["jwks_uri"], else: nil
   end
@@ -66,5 +66,9 @@ defmodule OauthAzureActivedirectory.Client do
     certificate = "-----BEGIN CERTIFICATE-----\n#{cert}\n-----END CERTIFICATE-----\n"
     spki = certificate |> :public_key.pem_decode |> hd |> :public_key.pem_entry_decode |> elem(1) |> elem(7)
     :public_key.pem_entry_encode(:SubjectPublicKeyInfo, spki) |> List.wrap |> :public_key.pem_encode
+  end
+
+  defp open_id_configuration do
+    "https://login.microsoftonline.com/common/.well-known/openid-configuration"
   end
 end
