@@ -12,7 +12,7 @@ by adding `oauth_azure_activedirectory` to your list of dependencies in `mix.exs
 ```elixir
 def deps do
   [
-    {:oauth_azure_activedirectory, "~> 0.1.0-beta2"}
+    {:oauth_azure_activedirectory, "~> 0.1.0-alpha"}
   ]
 end
 ```
@@ -107,10 +107,7 @@ Client.authorize_url!(_params)
 ### Useful links
 [Azure AD token reference](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-token-and-claims)
 
-You can decode your id_token at http://jwt.ms/
-
 [Microsoft OpenID discovery document.](https://login.microsoftonline.com/common/.well-known/openid-configuration)
 
-[Microsoft Discovery Keys](https://login.microsoftonline.com/common/discovery/keys)
-
 [Trusted CA certificate for Azure Cloud Services](https://www.digicert.com/CACerts/BaltimoreCyberTrustRoot.crt.pem)
+
