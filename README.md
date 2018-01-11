@@ -112,3 +112,5 @@ You can decode your id_token at http://jwt.ms/
 [Microsoft OpenID discovery document.](https://login.microsoftonline.com/common/.well-known/openid-configuration)
 
 [Microsoft Discovery Keys](https://login.microsoftonline.com/common/discovery/keys)
+
+[Trusted CA Certificate for Azure Cloud Services](https://www.digicert.com/CACerts/BaltimoreCyberTrustRoot.crt.pem)
