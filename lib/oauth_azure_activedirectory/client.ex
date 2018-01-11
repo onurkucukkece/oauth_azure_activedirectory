@@ -55,7 +55,7 @@ defmodule OauthAzureActivedirectory.Client do
       {:ok, response} -> 
           {{_, 200, 'OK'}, _headers, body} = response
           body
-      {:error, response} -> false
+      {:error} -> false
     end
   end
   
