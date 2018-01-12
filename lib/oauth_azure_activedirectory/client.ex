@@ -30,6 +30,7 @@ defmodule OauthAzureActivedirectory.Client do
 
   def process_callback!(%{params: %{"id_token" => id_token, "code" => code}}) do
     public_key = jwks_uri() |> get_discovery_keys |> get_public_key
+
     # verify with RSA SHA256 algorithm
     public = JsonWebToken.Algorithm.RsaUtil.public_key public_key
 
