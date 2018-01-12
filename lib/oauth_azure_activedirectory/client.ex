@@ -78,4 +78,32 @@ defmodule OauthAzureActivedirectory.Client do
   defp open_id_configuration do
     "https://login.microsoftonline.com/common/.well-known/openid-configuration"
   end
+
+  defp oauth_session_id do
+    uid = SecureRandom.uuid
+    Application.put_env(:oauth_azure_activedirectory, :oauth_session_id, uid)
+    uid
+  end
+
+  defp verify_token(code, claims) do
+    verify_chash(code, claims) |> verify_session |> verify_client
+  end
+
+  defp verify_chash(code, claims) do
+    full_hash = :crypto.hash(:sha256, code)
+    chash_length = div(String.length(full_hash), 2) - 1
+
+    c_hash = String.slice(full_hash, 0..chash_length) |> Base.url_encode64(padding: false)
+    if c_hash == claims[:c_hash], do: claims, else: false
+  end
+
+  defp verify_session(claims) do
+    oauth_session = Application.get_env(:oauth_azure_activedirectory, :oauth_session_id)
+    if claims[:nonce] == oauth_session, do: claims, else: false
+  end
+
+  defp verify_client(claims) do
+    configset = config()
+    if configset[:client_id] == claims[:aud], do: {:ok, claims}, else: {:error, false}
+  end
 end
