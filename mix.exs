@@ -4,7 +4,7 @@ defmodule OauthAzureActivedirectory.Mixfile do
   def project do
     [
       app: :oauth_azure_activedirectory,
-      version: "0.1.0-alpha",
+      version: "0.1.0-alpha2",
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
       deps: deps(),
