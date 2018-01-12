@@ -20,7 +20,7 @@ defmodule OauthAzureActivedirectory.Client do
     
   	params = Map.update(params, :response_mode, "form_post", &(&1 * "form_post"))
     params = Map.update(params, :response_type, "code id_token", &(&1 * "code id_token"))
-    params = Map.update(params, :nonce, SecureRandom.uuid, &(&1 * SecureRandom.uuid))
+    params = Map.update(params, :nonce, oauth_session, &(&1 * oauth_session))
     Client.authorize_url!(client(), params)
   end
 
