@@ -4,12 +4,14 @@ defmodule OauthAzureActivedirectory.Mixfile do
   def project do
     [
       app: :oauth_azure_activedirectory,
-      version: "0.1.0-alpha",
+      version: "0.1.0-alpha2",
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
       deps: deps(),
       package: package(),
       description: description(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test]
     ]
   end
 
@@ -27,7 +29,8 @@ defmodule OauthAzureActivedirectory.Mixfile do
       {:json, "~> 1.0"},
       {:json_web_token, "~> 0.2"},
       {:secure_random, "~> 0.5"},
-      {:ex_doc, ">= 0.0.0", only: :dev}
+      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:excoveralls, "~> 0.8", only: :test}
     ]
   end
 
