@@ -4,6 +4,8 @@ Omniauth authentication for Azure Active Directory using JWT.
 
 https://hex.pm/packages/oauth_azure_activedirectory
 
+![CircleCI status](https://circleci.com/gh/onurkucukkece/oauth_azure_activedirectory/tree/master.svg?style=shield&circle-token=25f0891a1b7c1db7c7c356e015fd024061e1f396)
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
