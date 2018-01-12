@@ -10,8 +10,8 @@ defmodule OauthAzureActivedirectory.Client do
       client_id: configset[:client_id],
       client_secret: configset[:client_secret],
       redirect_uri: configset[:redirect_uri],
-      authorize_url: "https://login.microsoftonline.com/#{config[:tenant]}/oauth2/authorize",
-      token_url: "https://login.microsoftonline.com/#{config[:tenant]}/oauth2/token"
+      authorize_url: "https://login.microsoftonline.com/#{configset[:tenant]}/oauth2/authorize",
+      token_url: "https://login.microsoftonline.com/#{configset[:tenant]}/oauth2/token"
     ])
   end
 
