@@ -26,7 +26,7 @@ defmodule OauthAzureActivedirectory.Client do
     AuthCode.authorize_url(client, params)
   end
 
-  def process_callback!(%{params: %{"id_token" => id_token}} = conn) do
+  def process_callback!(%{params: %{"id_token" => id_token}}) do
     public_key = jwks_uri() |> get_discovery_keys |> get_public_key
     # verify with RSA SHA256 algorithm
     public = JsonWebToken.Algorithm.RsaUtil.public_key public_key
@@ -37,28 +37,35 @@ defmodule OauthAzureActivedirectory.Client do
     }
     case JsonWebToken.verify(id_token, opts) do
       {:ok, claims} -> {:ok, claims}
+      {:error} -> {:error, false}
     end
   end
 
   defp jwks_uri do
-    body = http_request("https://login.microsoftonline.com/common/.well-known/openid-configuration")
+    body = http_request open_id_configuration()
     {status, list} = JSON.decode(body)
     if status == :ok, do: list["jwks_uri"], else: nil
   end
 
   defp http_request(url) do
-    {:ok, resp} = :httpc.request(:get, {to_charlist(url), []}, [], [])
-    {{_, 200, 'OK'}, _headers, body} = resp
-    body
+    cacert =  :code.priv_dir(:oauth_azure_activedirectory) ++ '/BaltimoreCyberTrustRoot.crt.pem'
+    :httpc.set_options(socket_opts: [verify: :verify_peer, cacertfile: cacert])
+     
+    case :httpc.request(:get, {to_charlist(url), []}, [], []) do
+      {:ok, response} -> 
+          {{_, 200, 'OK'}, _headers, body} = response
+          body
+      {:error} -> false
+    end
   end
-
+  
   defp get_discovery_keys(url)do
     list_body = http_request url
     {status, list} = JSON.decode list_body
 
-    if status == :ok do
-      item = Enum.at(list["keys"], 0)
-      item["x5c"]
+    case status do
+      :ok -> Enum.at(list["keys"], 0)["x5c"]
+      :error -> nil
     end
   end
 
@@ -66,5 +73,9 @@ defmodule OauthAzureActivedirectory.Client do
     certificate = "-----BEGIN CERTIFICATE-----\n#{cert}\n-----END CERTIFICATE-----\n"
     spki = certificate |> :public_key.pem_decode |> hd |> :public_key.pem_entry_decode |> elem(1) |> elem(7)
     :public_key.pem_entry_encode(:SubjectPublicKeyInfo, spki) |> List.wrap |> :public_key.pem_encode
+  end
+
+  defp open_id_configuration do
+    "https://login.microsoftonline.com/common/.well-known/openid-configuration"
   end
 end
