@@ -22,3 +22,6 @@ jobs:
       - run: mix deps.get
       - run: mix local.rebar --force
       - run: mix test
+test:
+  override:
+    - mix coveralls.circle
