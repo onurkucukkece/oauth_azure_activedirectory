@@ -3,13 +3,13 @@ defmodule OauthAzureActivedirectory.Client do
   alias OAuth2.Strategy.AuthCode
 
   def client do
-  	config = Application.get_env(:oauth_azure_activedirectory, OauthAzureActivedirectory.Client)
+  	configset = config()
 
   	OAuth2.Client.new([
       strategy: __MODULE__,
-      client_id: config[:client_id],
-      client_secret: config[:client_secret],
-      redirect_uri: config[:redirect_uri],
+      client_id: configset[:client_id],
+      client_secret: configset[:client_secret],
+      redirect_uri: configset[:redirect_uri],
       authorize_url: "https://login.microsoftonline.com/#{config[:tenant]}/oauth2/authorize",
       token_url: "https://login.microsoftonline.com/#{config[:tenant]}/oauth2/token"
     ])
@@ -41,6 +41,10 @@ defmodule OauthAzureActivedirectory.Client do
       {:ok, claims} -> {:ok, claims}
       {:error} -> {:error, false}
     end
+  end
+
+  defp config do
+    Application.get_env(:oauth_azure_activedirectory, OauthAzureActivedirectory.Client)
   end
 
   defp jwks_uri do
