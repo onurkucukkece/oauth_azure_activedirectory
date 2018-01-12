@@ -38,7 +38,7 @@ defmodule OauthAzureActivedirectory.Client do
       key: public
     }
     case JsonWebToken.verify(id_token, opts) do
-      {:ok, claims} -> {:ok, claims}
+      {:ok, claims} -> verify_token(code, claims)
       {:error} -> {:error, false}
     end
   end
