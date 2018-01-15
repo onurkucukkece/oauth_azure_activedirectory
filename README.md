@@ -16,7 +16,7 @@ by adding `oauth_azure_activedirectory` to your list of dependencies in `mix.exs
 ```elixir
 def deps do
   [
-    {:oauth_azure_activedirectory, "~> 0.1.0-beta3"}
+    {:oauth_azure_activedirectory, "~> 0.1.0"}
   ]
 end
 ```
@@ -27,7 +27,7 @@ config :oauth_azure_activedirectory, OauthAzureActivedirectory.Client,
   client_id: System.get_env("AZURE_CLIENT_ID"),
   client_secret: System.get_env("AZURE_CLIENT_SECRET"),
   tenant: System.get_env("AZURE_TENANT"),
-  redirect_uri: "http://localhost:4000/auth/azureactivedirectory/callback" # Will get rid of this before release
+  redirect_uri: "http://localhost:4000/auth/azureactivedirectory/callback"
 ```
 
 ### Usage
