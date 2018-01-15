@@ -55,8 +55,7 @@ defmodule OauthAzureActivedirectory.Client do
   end
 
   defp http_request(url) do
-    configset = config()
-    cacert =  configset[:ca_cert_path] ++ '/BaltimoreCyberTrustRoot.crt.pem'
+    cacert =  :code.priv_dir(:oauth_azure_activedirectory) ++ '/BaltimoreCyberTrustRoot.crt.pem'
     :httpc.set_options(socket_opts: [verify: :verify_peer, cacertfile: cacert])
      
     case :httpc.request(:get, {to_charlist(url), []}, [], []) do
