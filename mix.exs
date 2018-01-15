@@ -44,7 +44,7 @@ defmodule OauthAzureActivedirectory.Mixfile do
   # Package information
   defp package do
     [
-     files: ["lib", "mix.exs", "README.md", "LICENSE*"],
+     files: ["lib", "priv", "mix.exs", "README.md", "LICENSE*"],
      maintainers: ["Onur Kucukkece"],
      licenses: ["Apache 2.0"],
      links: %{"GitHub" => "https://github.com/onurkucukkece/oauth_azure_activedirectory"}
