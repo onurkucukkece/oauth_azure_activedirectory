@@ -98,7 +98,7 @@ defmodule OauthAzureActivedirectory.Client do
 
   defp verify_chash(code, claims) do
     full_hash = :crypto.hash(:sha256, code)
-    chash_length = div(String.length(full_hash), 2) - 1
+    chash_length = (String.length(full_hash) / 2.0 - 1.0) |> round
 
     c_hash = String.slice(full_hash, 0..chash_length) |> Base.url_encode64(padding: false)
     if c_hash == claims[:c_hash], do: claims, else: false
