@@ -16,7 +16,7 @@ defmodule OauthAzureActivedirectory.Client do
   end
 
   def authorize_url!(params \\ []) do
-    oauth_session = oauth_session_id()
+    oauth_session = SecureRandom.uuid
     
   	params = Map.update(params, :response_mode, "form_post", &(&1 * "form_post"))
     params = Map.update(params, :response_type, "code id_token", &(&1 * "code id_token"))
@@ -86,14 +86,9 @@ defmodule OauthAzureActivedirectory.Client do
     "https://login.microsoftonline.com/common/.well-known/openid-configuration"
   end
 
-  defp oauth_session_id do
-    uid = SecureRandom.uuid
-    Application.put_env(:oauth_azure_activedirectory, :oauth_session_id, uid)
-    uid
-  end
-
   defp verify_token(code, claims) do
-    verify_chash(code, claims) |> verify_session |> verify_client
+    # TODO had to remove uuid verification, needs a fix
+    verify_chash(code, claims) |> verify_client
   end
 
   defp verify_chash(code, claims) do
@@ -102,11 +97,6 @@ defmodule OauthAzureActivedirectory.Client do
 
     c_hash = String.slice(full_hash, 0..chash_length) |> Base.url_encode64(padding: false)
     if c_hash == claims[:c_hash], do: claims, else: false
-  end
-
-  defp verify_session(claims) do
-    oauth_session = Application.get_env(:oauth_azure_activedirectory, :oauth_session_id)
-    if claims[:nonce] == oauth_session, do: claims, else: false
   end
 
   defp verify_client(claims) do
