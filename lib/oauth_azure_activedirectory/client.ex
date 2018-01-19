@@ -87,7 +87,7 @@ defmodule OauthAzureActivedirectory.Client do
   end
 
   defp verify_token(code, claims) do
-    # TODO Had to remove uuid verification, needs a aix
+    # TODO had to remove uuid verification, needs a fix
     verify_chash(code, claims) |> verify_client
   end
 
