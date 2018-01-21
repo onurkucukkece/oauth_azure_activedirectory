@@ -26,7 +26,6 @@ end
 ```elixir
 config :oauth_azure_activedirectory, OauthAzureActivedirectory.Client,
   client_id: System.get_env("AZURE_CLIENT_ID"),
-  client_secret: System.get_env("AZURE_CLIENT_SECRET"),
   tenant: System.get_env("AZURE_TENANT"),
   redirect_uri: "http://localhost:4000/auth/azureactivedirectory/callback"
 ```
