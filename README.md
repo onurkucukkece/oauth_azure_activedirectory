@@ -5,6 +5,7 @@ Omniauth authentication for Azure Active Directory using JWT.
 https://hex.pm/packages/oauth_azure_activedirectory
 
 ![CircleCI status](https://circleci.com/gh/onurkucukkece/oauth_azure_activedirectory/tree/master.svg?style=shield&circle-token=25f0891a1b7c1db7c7c356e015fd024061e1f396)
+[![Coverage Status](https://coveralls.io/repos/github/onurkucukkece/oauth_azure_activedirectory/badge.svg)](https://coveralls.io/github/onurkucukkece/oauth_azure_activedirectory)
 [![Hex.pm version](https://img.shields.io/hexpm/v/oauth_azure_activedirectory.svg?style=flat-square)](https://hex.pm/packages/oauth_azure_activedirectory)
 [![Hex.pm downloads](https://img.shields.io/hexpm/dt/oauth_azure_activedirectory.svg)](https://hex.pm/packages/oauth_azure_activedirectory)
 
