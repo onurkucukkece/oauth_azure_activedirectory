@@ -21,4 +21,4 @@ jobs:
       - run: mix local.hex --force
       - run: mix deps.get
       - run: mix local.rebar --force
-      - run: mix test
+      - run: MIX_ENV=test mix coveralls.post --token $COVERALLS_REPO_TOKEN
