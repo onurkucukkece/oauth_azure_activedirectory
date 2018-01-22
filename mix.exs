@@ -11,7 +11,7 @@ defmodule OauthAzureActivedirectory.Mixfile do
       package: package(),
       description: description(),
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test]
+      preferred_cli_env: [espec: :test]
     ]
   end
 
@@ -29,6 +29,7 @@ defmodule OauthAzureActivedirectory.Mixfile do
       {:json, "~> 1.0"},
       {:json_web_token, "~> 0.2"},
       {:secure_random, "~> 0.5"},
+      {:espec, "~> 1.4.6", only: :test},
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:excoveralls, "~> 0.8", only: :test}
     ]
