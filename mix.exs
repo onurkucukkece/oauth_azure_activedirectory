@@ -18,7 +18,7 @@ defmodule OauthAzureActivedirectory.Mixfile do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :httpoison]
     ]
   end
 
@@ -29,6 +29,7 @@ defmodule OauthAzureActivedirectory.Mixfile do
       {:json, "~> 1.0"},
       {:json_web_token, "~> 0.2"},
       {:secure_random, "~> 0.5"},
+      {:httpoison, "~> 1.0"},
       {:espec, "~> 1.4.6", only: :test},
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:excoveralls, "~> 0.8", only: :test}
