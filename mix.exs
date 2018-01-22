@@ -11,7 +11,7 @@ defmodule OauthAzureActivedirectory.Mixfile do
       package: package(),
       description: description(),
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [espec: :test]
+      preferred_cli_env: [espec: :test, "coveralls.post": :test, "coveralls.html": :test]
     ]
   end
 
