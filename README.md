@@ -115,3 +115,8 @@ Client.authorize_url!(_params)
 
 [Trusted CA certificate for Azure Cloud Services](https://www.digicert.com/CACerts/BaltimoreCyberTrustRoot.crt.pem)
 
+### To Do
+
+- Real tests for callback phase
+- Re-implement uuid verificaiton
+- Documentation
