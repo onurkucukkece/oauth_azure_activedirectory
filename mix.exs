@@ -30,8 +30,8 @@ defmodule OauthAzureActivedirectory.Mixfile do
       {:json_web_token, "~> 0.2"},
       {:secure_random, "~> 0.5"},
       {:httpoison, "~> 1.0"},
-      {:espec, "~> 1.4.6", only: :test},
       {:ex_doc, ">= 0.0.0", only: :dev},
+      {:espec, "~> 1.4.6", only: :test},
       {:excoveralls, "~> 0.8", only: :test}
     ]
   end
