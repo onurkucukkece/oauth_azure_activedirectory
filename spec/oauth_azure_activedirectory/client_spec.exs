@@ -24,4 +24,9 @@ defmodule OauthAzureActivedirectory.ClientSpec do
       'session_state' => session_state,
       'code' => code }
   end
+
+  context "Mock HTTPoison" do
+    before do: allow(HTTPotion).to accept(:get, fn(url, [], opts) -> "here" end)
+    it do: expect HTTPoison.get("https://login.microsoftonline.com", [], []) |> to(eq "here")
+  end
 end
