@@ -24,8 +24,24 @@ defmodule OauthAzureActivedirectory.ClientSpec do
       'code' => code }
   end
 
-  context "Mock HTTPoison" do
-    before do: allow(HTTPotion).to accept(:get, fn(url, [], opts) -> "here" end)
-    it do: expect HTTPoison.get("https://login.microsoftonline.com", [], []) |> to(eq "here")
+  before_all do
+    allow HTTPoison |> to(accept :get, fn("https://login.microsoftonline.com/common/.well-known/openid-configuration", [], opts) -> openid_config_response end)
+    allow HTTPoison |> to(accept :get, fn("https://login.microsoftonline.com/common/discovery/keys", [], opts) -> keys_response end)
+    allow SecureRandom |> to(accept :uuid, fn() -> "my nonce" end)
+  end
+
+  context "authorize" do 
+    it "returns authorize url" do
+      url = URI.parse Client.authorize_url!(%{})
+      expect url.host |> to(eq "login.microsoftonline.com")
+      expect url.path |> to(eq "/tenant/oauth2/authorize")
+      expect url.port |> to(eq 443)
+
+      url_query = URI.decode_query(url.query)
+      expect url_query["client_id"] |> to(eq "the client id")
+      expect url_query["response_mode"] |> to(eq "form_post")
+      expect url_query["response_type"] |> to(eq "code id_token")
+      expect url_query["nonce"] |> to(eq "my nonce")
+    end
   end
 end
