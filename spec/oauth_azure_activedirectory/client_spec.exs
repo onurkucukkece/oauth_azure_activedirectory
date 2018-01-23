@@ -1,6 +1,8 @@
 defmodule OauthAzureActivedirectory.ClientSpec do
   use ESpec
 
+  alias OauthAzureActivedirectory.Client
+
   let :x5c, do: File.read "#{File.cwd!}/spec/fixtures/x5c.txt"
   let :id_token, do: File.read "#{File.cwd!}/spec/fixtures/id_token.txt"
 
