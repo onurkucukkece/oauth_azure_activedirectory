@@ -3,6 +3,6 @@
 use Mix.Config
 
 config :oauth_azure_activedirectory, OauthAzureActivedirectory.Client,
-  client_id: System.get_env("AZURE_CLIENT_ID"),
-  tenant: System.get_env("MICROSOFT_TENANT"),
+  client_id: "the client id",
+  tenant: "tenant",
   redirect_uri: "http://localhost:4000/auth/azureactivedirectory/callback"
