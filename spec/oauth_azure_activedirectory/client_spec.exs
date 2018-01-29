@@ -3,6 +3,12 @@ defmodule OauthAzureActivedirectory.ClientSpec do
 
   alias OauthAzureActivedirectory.Client
 
+  before_all do
+    allow HTTPoison |> to(accept :get, fn("https://login.microsoftonline.com/common/.well-known/openid-configuration", [], opts) -> openid_config_response end)
+    allow HTTPoison |> to(accept :get, fn("https://login.microsoftonline.com/common/discovery/keys", [], opts) -> keys_response end)
+    allow SecureRandom |> to(accept :uuid, fn() -> "my nonce" end)
+  end
+
   let :x5c, do: File.read "#{File.cwd!}/spec/fixtures/x5c.txt"
   let :id_token, do: File.read "#{File.cwd!}/spec/fixtures/id_token.txt"
 
@@ -24,12 +30,6 @@ defmodule OauthAzureActivedirectory.ClientSpec do
       'code' => code }
   end
 
-  before_all do
-    allow HTTPoison |> to(accept :get, fn("https://login.microsoftonline.com/common/.well-known/openid-configuration", [], opts) -> openid_config_response end)
-    allow HTTPoison |> to(accept :get, fn("https://login.microsoftonline.com/common/discovery/keys", [], opts) -> keys_response end)
-    allow SecureRandom |> to(accept :uuid, fn() -> "my nonce" end)
-  end
-
   context "authorize" do 
     it "returns authorize url" do
       url = URI.parse Client.authorize_url!(%{})
@@ -42,6 +42,14 @@ defmodule OauthAzureActivedirectory.ClientSpec do
       expect url_query["response_mode"] |> to(eq "form_post")
       expect url_query["response_type"] |> to(eq "code id_token")
       expect url_query["nonce"] |> to(eq "my nonce")
+    end
+  end
+
+  context "process_callback" do
+    it "returns user claims with right code and id_token" do
+      {:ok, token} = id_token
+      {status, jwt} = Client.process_callback!(%{params: %{"id_token" => token, "code" => code}})
+      expect status |> to(eq :ok)
     end
   end
 end
