@@ -52,7 +52,8 @@ defmodule OauthAzureActivedirectory.ClientSpec do
   context "process_callback" do
     xit "returns user claims with right code and id_token" do
       :meck.new(HTTPoison)
-      :meck.expect(HTTPoison, :get, fn(url) -> if url == "https://login.microsoftonline.com/common/.well-known/openid-configuration", do: openid_config_response, else: keys_response  end)
+      options = [ssl: [cacertfile: :code.priv_dir(:oauth_azure_activedirectory) ++ '/BaltimoreCyberTrustRoot.crt.pem']]
+      :meck.expect(HTTPoison, :get, fn(url, [], options) -> if url == "https://login.microsoftonline.com/common/.well-known/openid-configuration", do: {:ok, %{body: openid_config_response}}, else: {:ok, %{body: keys_response}} end)
       {status, jwt} = Client.process_callback!(%{params: %{"id_token" => id_token, "code" => code}})
       :meck.unload(HTTPoison)
       expect status |> to(eq :ok)
