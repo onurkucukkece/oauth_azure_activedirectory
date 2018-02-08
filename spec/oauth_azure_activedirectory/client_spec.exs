@@ -9,8 +9,14 @@ defmodule OauthAzureActivedirectory.ClientSpec do
     allow SecureRandom |> to(accept :uuid, fn() -> "my nonce" end)
   end
 
-  let :x5c, do: File.read "#{File.cwd!}/spec/fixtures/x5c.txt"
-  let :id_token, do: File.read "#{File.cwd!}/spec/fixtures/id_token.txt"
+  let :x5c do
+    {status, response} = File.read "#{File.cwd!}/spec/fixtures/x5c.txt"
+    response
+  end
+  let :id_token do
+    {status, response} = File.read "#{File.cwd!}/spec/fixtures/id_token.txt"
+    response
+  end
 
   # These values were used to create the "successful" id_token JWT.
   let :code, do: 'code'
