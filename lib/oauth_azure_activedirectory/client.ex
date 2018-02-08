@@ -55,7 +55,6 @@ defmodule OauthAzureActivedirectory.Client do
   end
 
   defp http_request(url) do
-    HTTPoison.start
     cacert =  :code.priv_dir(:oauth_azure_activedirectory) ++ '/BaltimoreCyberTrustRoot.crt.pem'
     options = [ssl: [cacertfile: cacert]]
 
