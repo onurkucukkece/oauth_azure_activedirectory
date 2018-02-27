@@ -10,15 +10,15 @@ defmodule OauthAzureActivedirectory.Mixfile do
       deps: deps(),
       package: package(),
       description: description(),
-      test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test]
+      test_coverage: [tool: ExCoveralls, test_task: "espec"],
+      preferred_cli_env: [espec: :test, "coveralls.post": :test, "coveralls.html": :test]
     ]
   end
 
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :httpoison]
     ]
   end
 
@@ -29,7 +29,9 @@ defmodule OauthAzureActivedirectory.Mixfile do
       {:json, "~> 1.0"},
       {:json_web_token, "~> 0.2"},
       {:secure_random, "~> 0.5"},
+      {:httpoison, "~> 1.0"},
       {:ex_doc, ">= 0.0.0", only: :dev},
+      {:espec, "~> 1.4.6", only: :test},
       {:excoveralls, "~> 0.8", only: :test}
     ]
   end
