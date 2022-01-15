@@ -34,6 +34,7 @@ defmodule OauthAzureActivedirectory.Client do
       params
       |> Map.update(:response_mode, "form_post", &(&1 * "form_post"))
       |> Map.update(:response_type, "code id_token", &(&1 * "id_token token"))
+      |> Map.update(:scope, "openid+profile+email", &(&1 * "openid+profile+email"))
       |> Map.update(:nonce, oauth_session, &(&1 * oauth_session))
 
     Client.authorize_url!(client(), params)
