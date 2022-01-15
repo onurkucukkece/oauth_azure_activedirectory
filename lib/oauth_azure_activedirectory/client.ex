@@ -2,7 +2,6 @@ defmodule OauthAzureActivedirectory.Client do
   alias OAuth2.Client
   alias OAuth2.Strategy.AuthCode
   alias JsonWebToken.Algorithm.RsaUtil
-  alias OauthAzureActivedirectory.NonceAgent
 
   def logout(redirect_uri) do
   	configset = config()
@@ -28,7 +27,7 @@ defmodule OauthAzureActivedirectory.Client do
 
   def authorize_url!(params \\ []) do
     oauth_session = SecureRandom.uuid
-    NonceAgent.put(oauth_session)
+    OauthAzureActivedirectory.NonceAgent.put(oauth_session)
     
     params =
       params
