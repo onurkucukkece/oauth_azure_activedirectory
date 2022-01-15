@@ -2,8 +2,7 @@ defmodule OauthAzureActivedirectory.Client do
   alias OAuth2.Client
   alias OAuth2.Strategy.AuthCode
   alias JsonWebToken.Algorithm.RsaUtil
-
-  use OauthAzureActivedirectory.NonceAgent
+  # alias OauthAzureActivedirectory.NonceAgent
 
   def logout(redirect_uri) do
   	configset = config()
@@ -29,8 +28,7 @@ defmodule OauthAzureActivedirectory.Client do
 
   def authorize_url!(params \\ []) do
     oauth_session = SecureRandom.uuid
-    nonce_agent = OauthAzureActivedirectory.NonceAgent
-    nonce_agent.put(oauth_session)
+    # NonceAgent.put(oauth_session)
     
     params =
       params
@@ -155,7 +153,7 @@ defmodule OauthAzureActivedirectory.Client do
       now >= claims[:nbf] and
       now >= claims[:iat] and
       # nonce
-      NonceAgent.check_and_delete(claims[:nonce])
+      # NonceAgent.check_and_delete(claims[:nonce])
 
     true = is_valid
     claims
