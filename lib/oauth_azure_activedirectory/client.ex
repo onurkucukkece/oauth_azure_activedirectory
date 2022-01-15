@@ -154,7 +154,7 @@ defmodule OauthAzureActivedirectory.Client do
       now >= claims[:iat] and
       # nonce
       # NonceAgent.check_and_delete(claims[:nonce])
-
+      true
     true = is_valid
     claims
   end
