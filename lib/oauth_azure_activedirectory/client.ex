@@ -2,12 +2,13 @@ defmodule OauthAzureActivedirectory.Client do
   alias OAuth2.Client
   alias OAuth2.Strategy.AuthCode
 
-  def logout(redirect_uri) do
+  def logout do
     configset = config()
     tenant = configset[:tenant]
-
     logout_url = openid_configuration("end_session_endpoint", tenant)
-    "#{logout_url}?&post_logout_redirect_uri=#{redirect_uri}"
+    logout_redirect_url = configset[:logout_redirect_url] || configset[:redirect_uri]
+
+    "#{logout_url}?&post_logout_redirect_uri=#{logout_redirect_url}"
   end
 
   def client do
@@ -18,6 +19,7 @@ defmodule OauthAzureActivedirectory.Client do
       client_id: configset[:client_id],
       client_secret: configset[:client_secret],
       redirect_uri: configset[:redirect_uri],
+      logout_redirect_url: configset[:logout_redirect_url],
       authorize_url: openid_configuration("authorization_endpoint", configset[:tenant]),
       token_url: openid_configuration("token_endpoint", configset[:tenant])
     ])
