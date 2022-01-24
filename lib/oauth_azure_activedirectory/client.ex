@@ -6,10 +6,9 @@ defmodule OauthAzureActivedirectory.Client do
   def logout(redirect_uri) do
   	configset = config()
     tenant = configset[:tenant]
-    client = configset[:client_id]
 
-    "https://login.microsoftonline.com/#{tenant}/oauth2/logout?client_id=#{client
-    }&post_logout_redirect_uri=#{redirect_uri}"
+    logout_url = openid_configuration("end_session_endpoint", tenant)
+    "#{logout_url}?&post_logout_redirect_uri=#{redirect_uri}"
   end
 
   def client do
@@ -20,8 +19,9 @@ defmodule OauthAzureActivedirectory.Client do
       client_id: configset[:client_id],
       client_secret: configset[:client_secret],
       redirect_uri: configset[:redirect_uri],
-      authorize_url: "https://login.microsoftonline.com/#{configset[:tenant]}/oauth2/v2.0/authorize",
-      token_url: "https://login.microsoftonline.com/#{configset[:tenant]}/oauth2/v2.0/token"
+      
+      authorize_url: openid_configuration("authorization_endpoint", configset[:tenant]),
+      token_url: openid_configuration("token_endpoint", configset[:tenant])
     ])
   end
 
@@ -59,8 +59,8 @@ defmodule OauthAzureActivedirectory.Client do
     vf = verify_chash(chash, code)
     vc = verify_client(payload)
 
-    public_PEM =
-      jwks_uri()
+    configset = config()
+    public_PEM = openid_configuration("jwks_uri", configset[:tenant])
       |> get_discovery_key(kid)
       |> get_public_key
 
@@ -104,15 +104,14 @@ defmodule OauthAzureActivedirectory.Client do
     now = :os.system_time(:second)
 
     is_valid =
-      # audience
-      configset[:client_id] == Map.get(claims, "aud") and
-      # tenant/issuer
-      configset[:tenant] == Map.get(claims, "tid") and
-      "https://login.microsoftonline.com/#{configset[:tenant]}/v2.0" == Map.get(claims, "iss") and
+
+      Map.get(claims, "aud") == configset[:client_id] and
+      Map.get(claims, "tid") == configset[:tenant] and
+      Map.get(claims, "iss") == openid_configuration("issuer", configset[:tenant]) and
       # time checks
       now < Map.get(claims, "exp") and
       now >= Map.get(claims, "nbf") and
-      now >= Map.get(claims, "iat") and
+      now >= Map.get(claims, "iat")
 
     is_valid
   end
@@ -161,11 +160,10 @@ defmodule OauthAzureActivedirectory.Client do
     end
   end
 
-  defp open_id_configuration do
-    "https://login.microsoftonline.com/common/.well-known/openid-configuration"
-  end
-
-  defp jwks_uri do
-    "https://login.microsoftonline.com/common/discovery/keys"
+  defp openid_configuration(key, tenant_id \\ "common") do
+    url = "https://login.microsoftonline.com/#{tenant_id}/v2.0/.well-known/openid-configuration"
+    
+    openid_config = http_request(url) |> JSON.decode!
+    openid_config[key]
   end
 end
