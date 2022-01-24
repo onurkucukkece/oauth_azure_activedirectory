@@ -1,7 +1,6 @@
 defmodule OauthAzureActivedirectory.Client do
   alias OAuth2.Client
   alias OAuth2.Strategy.AuthCode
-  alias JsonWebToken.Algorithm.RsaUtil
 
   def logout(redirect_uri) do
   	configset = config()
@@ -51,30 +50,14 @@ defmodule OauthAzureActivedirectory.Client do
     header = Enum.at(claims, 0) |> base64_decode
     payload = Enum.at(claims, 1) |> base64_decode
     signature = Enum.at(claims, 2) |> Base.url_decode64!(padding: false)
+    message = Enum.join([Enum.at(claims, 0), Enum.at(claims, 1)], ".")
 
-    alg = Map.get(header, "alg")
     kid = Map.get(header, "kid")
     chash = Map.get(payload, "c_hash")
 
     vf = verify_chash(chash, code)
     vc = verify_client(payload)
-
-    configset = config()
-    public_PEM = openid_configuration("jwks_uri", configset[:tenant])
-      |> get_discovery_key(kid)
-      |> get_public_key
-
-    message = Enum.join([Enum.at(claims, 0), Enum.at(claims, 1)], ".")
-
-    [key_entry] = :public_key.pem_decode(public_PEM)
-    public_key = :public_key.pem_entry_decode(key_entry)
-
-    verif = :public_key.verify(
-      message,
-      :sha256,
-      signature,
-      public_key
-    )
+    vts = verify_token_signature(message, signature, kid)
 
     payload
   end
@@ -103,17 +86,31 @@ defmodule OauthAzureActivedirectory.Client do
     configset = config()
     now = :os.system_time(:second)
 
-    is_valid =
+    Map.get(claims, "aud") == configset[:client_id] and
+    Map.get(claims, "tid") == configset[:tenant] and
+    Map.get(claims, "iss") == openid_configuration("issuer", configset[:tenant]) and
+    # time checks
+    now < Map.get(claims, "exp") and
+    now >= Map.get(claims, "nbf") and
+    now >= Map.get(claims, "iat")
+  end
 
-      Map.get(claims, "aud") == configset[:client_id] and
-      Map.get(claims, "tid") == configset[:tenant] and
-      Map.get(claims, "iss") == openid_configuration("issuer", configset[:tenant]) and
-      # time checks
-      now < Map.get(claims, "exp") and
-      now >= Map.get(claims, "nbf") and
-      now >= Map.get(claims, "iat")
+  defp verify_token_signature(message, signature, kid) do
+    configset = config()
 
-    is_valid
+    public_PEM = openid_configuration("jwks_uri", configset[:tenant])
+      |> get_discovery_key(kid)
+      |> get_public_key
+
+    [key_entry] = :public_key.pem_decode(public_PEM)
+    public_key = :public_key.pem_entry_decode(key_entry)
+
+    :public_key.verify(
+      message,
+      :sha256,
+      signature,
+      public_key
+    )
   end
 
   defp get_public_key(cert) do
