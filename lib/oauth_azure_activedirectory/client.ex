@@ -53,7 +53,7 @@ defmodule OauthAzureActivedirectory.Client do
     
     header = Enum.at(claims, 0) |> base64_decode
     payload = Enum.at(claims, 1) |> base64_decode
-    raw_signature = Enum.at(claims, 2) |> Base.url_decode64!(padding: false)
+    signature = Enum.at(claims, 2) |> Base.url_decode64!(padding: false)
 
     alg = Map.get(header, "alg")
     kid = Map.get(header, "kid")
@@ -67,12 +67,7 @@ defmodule OauthAzureActivedirectory.Client do
       |> get_discovery_key(kid)
       |> get_public_key
 
-
     message = Enum.join([Enum.at(claims, 0), Enum.at(claims, 1)], ".")
-
-    size = div(byte_size(raw_signature), 2)
-    <<r::binary-size(size), s::binary-size(size)>> = raw_signature
-    signature = <<48, 129, 136, 2, size, r::binary, 2, size, s::binary>>
 
     [key_entry] = :public_key.pem_decode(public_PEM)
     public_key = :public_key.pem_entry_decode(key_entry)
@@ -84,6 +79,7 @@ defmodule OauthAzureActivedirectory.Client do
       public_key
     )
 
+    payload
   end
 
   def base64_decode(string) do
@@ -163,7 +159,8 @@ defmodule OauthAzureActivedirectory.Client do
       |> http_request
       |> JSON.decode
 
-    key = Enum.find(list["keys"], fn elem -> Logger.info elem["kid"]; elem["kid"] == kid end)
+    key = Enum.find(list["keys"], fn elem -> elem["kid"] == kid end)
+
     case status do
       :ok -> key["x5c"]
       :error -> nil
