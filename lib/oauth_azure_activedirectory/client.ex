@@ -2,7 +2,6 @@ defmodule OauthAzureActivedirectory.Client do
   alias OAuth2.Client
   alias OAuth2.Strategy.AuthCode
   alias JsonWebToken.Algorithm.RsaUtil
-  # alias OauthAzureActivedirectory.NonceAgent
 
   def logout(redirect_uri) do
   	configset = config()
@@ -28,8 +27,6 @@ defmodule OauthAzureActivedirectory.Client do
 
   def authorize_url! do
     oauth_session = SecureRandom.uuid
-    # NonceAgent.put(oauth_session)
-
     key = :crypto.strong_rand_bytes(64) |> Base.url_encode64()
     code_challenge = :crypto.hash(:sha256, key)  |> Base.url_encode64 |> String.replace("=", "")
 
@@ -116,9 +113,6 @@ defmodule OauthAzureActivedirectory.Client do
       now < Map.get(claims, "exp") and
       now >= Map.get(claims, "nbf") and
       now >= Map.get(claims, "iat") and
-      # nonce
-      # NonceAgent.check_and_delete(claims[:nonce])
-      true
 
     is_valid
   end
@@ -173,11 +167,5 @@ defmodule OauthAzureActivedirectory.Client do
 
   defp jwks_uri do
     "https://login.microsoftonline.com/common/discovery/keys"
-  end
-
-  defp verify_token(code, claims) do
-    claims
-    |> verify_chash(code)
-    |> verify_client
   end
 end
