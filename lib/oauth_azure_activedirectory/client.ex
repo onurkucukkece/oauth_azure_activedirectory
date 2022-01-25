@@ -4,11 +4,12 @@ defmodule OauthAzureActivedirectory.Client do
 
   def logout do
     configset = config()
+    client = configset[:client_id]
     tenant = configset[:tenant]
     logout_url = openid_configuration("end_session_endpoint", tenant)
     logout_redirect_url = configset[:logout_redirect_url] || configset[:redirect_uri]
 
-    "#{logout_url}?&post_logout_redirect_uri=#{logout_redirect_url}"
+    "#{logout_url}?client_id=#{client}&post_logout_redirect_uri=#{logout_redirect_url}"
   end
 
   def client do
