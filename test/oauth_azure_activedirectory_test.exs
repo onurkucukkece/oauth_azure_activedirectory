@@ -1,5 +1,5 @@
 defmodule OauthAzureActivedirectoryTest do
   use ExUnit.Case
-  doctest OauthAzureActivedirectory
+  # doctest OauthAzureActivedirectory
 
 end
