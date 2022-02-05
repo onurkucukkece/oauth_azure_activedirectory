@@ -6,7 +6,7 @@ jobs:
   build:
     docker:
       # specify the version here
-      - image: circleci/elixir:1.7.4
+      - image: circleci/elixir:1.7.
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -21,4 +21,5 @@ jobs:
       - run: mix local.hex --force
       - run: mix deps.get
       - run: mix local.rebar --force
-      - run: MIX_ENV=test mix coveralls.circle --token $COVERALLS_REPO_TOKEN --branch $CIRCLE_BRANCH
+      - run: mix test
+      - run: MIX_ENV=test mix coveralls.post --token $COVERALLS_REPO_TOKEN --branch $CIRCLE_BRANCH
