@@ -5,10 +5,9 @@ defmodule OauthAzureActivedirectoryTest.Client do
   alias OauthAzureActivedirectory.Client
   alias OauthAzureActivedirectory.Response
 
-  doctest OauthAzureActivedirectory.Client
-  test "verify_token_signature" do
-    with_mock Response,
-      [validate: fn(claims, _) -> 
+  defmacro with_signature_mock(block) do
+    quote do
+      with_mock Response, [validate: fn(claims, _) ->
         [encoded_message, encoded_signature] = claims
 
         message = encoded_message |> Base.url_decode64!(padding: false)
@@ -29,6 +28,15 @@ defmodule OauthAzureActivedirectoryTest.Client do
           false -> "oops"
         end
       end] do
+        unquote(block)
+      end
+    end
+  end
+
+  doctest OauthAzureActivedirectory.Client
+  describe "verify_token_signature" do
+    test "verifies nad returns payload" do
+      with_signature_mock do
         private_key = "test/keys/private.key" |> File.read!() |> :public_key.pem_decode() |> hd() |> :public_key.pem_entry_decode()
         message = "yes"
 
@@ -37,6 +45,18 @@ defmodule OauthAzureActivedirectoryTest.Client do
 
         assert message == Client.process_callback!(%{params: %{"id_token" => "#{encoded_message}.#{signature}", "code" => "code"}})
       end
+    end
+
+    test "raises error private key doesn't match" do
+      with_signature_mock do
+        private_key = "test/keys/wrong-private.key" |> File.read!() |> :public_key.pem_decode() |> hd() |> :public_key.pem_entry_decode()
+        message = "yes"
+
+        signature = :public_key.sign(message, :sha256, private_key) |> Base.url_encode64
+        encoded_message = message |> Base.url_encode64
+
+        assert "oops" == Client.process_callback!(%{params: %{"id_token" => "#{encoded_message}.#{signature}", "code" => "code"}})
+      end
+    end
   end
 end
-

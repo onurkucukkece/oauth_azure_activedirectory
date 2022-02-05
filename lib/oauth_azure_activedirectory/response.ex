@@ -45,8 +45,8 @@ defmodule OauthAzureActivedirectory.Response do
     end
   end
 
-  def openid_configuration(key, tenant_id \\ "common") do
-    url = "https://login.microsoftonline.com/#{tenant_id}/v2.0/.well-known/openid-configuration"
+  def openid_configuration(key) do
+    url = "https://login.microsoftonline.com/#{configset[:tenant]}/v2.0/.well-known/openid-configuration"
     
     openid_config = http_request(url) |> JSON.decode!
     openid_config[key]
@@ -63,12 +63,11 @@ defmodule OauthAzureActivedirectory.Response do
   end
 
   defp verify_client(claims) do
-    configset = OauthAzureActivedirectory.config
     now = :os.system_time(:second)
 
     Map.get(claims, "aud") == configset[:client_id] and
     Map.get(claims, "tid") == configset[:tenant] and
-    Map.get(claims, "iss") == openid_configuration("issuer", configset[:tenant]) and
+    Map.get(claims, "iss") == openid_configuration("issuer") and
     # time checks
     now < Map.get(claims, "exp") and
     now >= Map.get(claims, "nbf") and
@@ -76,9 +75,7 @@ defmodule OauthAzureActivedirectory.Response do
   end
 
   defp verify_token_signature(message, signature, kid) do
-    configset = OauthAzureActivedirectory.config
-
-    public_PEM = openid_configuration("jwks_uri", configset[:tenant])
+    public_PEM = openid_configuration("jwks_uri")
       |> get_discovery_key(kid)
       |> get_public_key
 
@@ -105,5 +102,9 @@ defmodule OauthAzureActivedirectory.Response do
     :public_key.pem_entry_encode(:SubjectPublicKeyInfo, spki)
     |> List.wrap
     |> :public_key.pem_encode
+  end
+
+  defp configset do
+    OauthAzureActivedirectory.config
   end
 end
