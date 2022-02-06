@@ -25,7 +25,7 @@ defmodule OauthAzureActivedirectory.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:oauth2, "~> 0.9.2"},
+      {:oauth2, "~> 2.0"},
       {:json, "~> 1.0"},
       {:secure_random, "~> 0.5"},
       {:ex_doc, ">= 0.0.0", only: :dev},
