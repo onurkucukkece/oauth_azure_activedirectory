@@ -1,4 +1,17 @@
 defmodule OauthAzureActivedirectory.Http do
+  @moduledoc """
+  Documentation for OauthAzureActivedirectory.
+  """
+
+  @doc """
+  Hello world.
+
+  ## Examples
+
+      iex> OauthAzureActivedirectory.hello
+      :world
+
+  """
   def request(url) do
     cacert =  :code.priv_dir(:oauth_azure_activedirectory) ++ '/DigiCertGlobalRootCA.crt.pem'
     :httpc.set_options(socket_opts: [verify: :verify_peer, cacertfile: cacert])

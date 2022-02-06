@@ -4,6 +4,19 @@ defmodule OauthAzureActivedirectory.Client do
   alias OauthAzureActivedirectory.Error
   alias OauthAzureActivedirectory.Response
 
+  @moduledoc """
+  Documentation for OauthAzureActivedirectory.
+  """
+
+  @doc """
+  Hello world.
+
+  ## Examples
+
+      iex> OauthAzureActivedirectory.hello
+      :world
+
+  """
   def logout do
     client = configset[:client_id]
     tenant = configset[:tenant]

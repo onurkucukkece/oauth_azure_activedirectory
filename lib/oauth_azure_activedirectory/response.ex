@@ -3,6 +3,19 @@ defmodule OauthAzureActivedirectory.Response do
 
   import OauthAzureActivedirectory.Http
 
+  @moduledoc """
+  Documentation for OauthAzureActivedirectory.
+  """
+
+  @doc """
+  Hello world.
+
+  ## Examples
+
+      iex> OauthAzureActivedirectory.hello
+      :world
+
+  """
   def verify_code(chash, code) do
     hash_expected = :crypto.hash(:sha256, code)
 
@@ -26,11 +39,11 @@ defmodule OauthAzureActivedirectory.Response do
   end
 
   def verify_signature(message, signature, kid) do
-    public_PEM = openid_configuration("jwks_uri")
+    public_pem = openid_configuration("jwks_uri")
       |> get_discovery_key(kid)
       |> get_public_key
 
-    [key_entry] = :public_key.pem_decode(public_PEM)
+    [key_entry] = :public_key.pem_decode(public_pem)
     public_key = :public_key.pem_entry_decode(key_entry)
 
     :public_key.verify(
