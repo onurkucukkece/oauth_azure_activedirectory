@@ -3,17 +3,17 @@ defmodule OauthAzureActivedirectory.Response do
 
   import OauthAzureActivedirectory.Http
 
-  def verify_client(chash, code) do
+  def verify_code(chash, code) do
     hash_expected = :crypto.hash(:sha256, code)
 
-    {:ok, hash_received } = chash |> Base.url_decode64(padding: false)
+    hash_received = chash |> Base.url_decode64!(padding: false)
 
     hash_length = byte_size(hash_received)
     hash_expected = :binary.part(hash_expected, 0, hash_length)
     hash_expected === hash_received
   end
 
-  def verify_session(claims) do
+  def verify_client(claims) do
     now = :os.system_time(:second)
 
     Map.get(claims, "aud") == configset[:client_id] and

@@ -58,9 +58,9 @@ defmodule OauthAzureActivedirectory.Client do
     kid = Map.get(header, "kid")
     chash = Map.get(payload, "c_hash")
 
-    vf = Response.verify_client(chash, code)
-    vc = Response.verify_session(payload)
     vts = Response.verify_signature(message, signature, kid)
+    vf = Response.verify_code(chash, code)
+    vc = Response.verify_client(payload)
 
     payload
   end
