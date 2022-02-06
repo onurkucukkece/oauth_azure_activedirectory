@@ -4,7 +4,7 @@ defmodule OauthAzureActivedirectory.Client do
   alias OauthAzureActivedirectory.Response
 
   import OauthAzureActivedirectory.Response
-  
+
   def logout do
     client = configset[:client_id]
     tenant = configset[:tenant]
@@ -39,7 +39,7 @@ defmodule OauthAzureActivedirectory.Client do
       nonce: SecureRandom.uuid
     }
 
-    Client.authorize_url!(client(), params)
+    Client.authorize_url!(client, params)
   end
 
   def authorize_url(client, params) do
@@ -49,7 +49,18 @@ defmodule OauthAzureActivedirectory.Client do
   def process_callback!(%{params: %{"id_token" => id_token, "code" => code}}) do
     claims = id_token |> String.split(".")
 
-    payload = Response.validate(claims, code)
+    header = Enum.at(claims, 0) |> Base.url_decode64!(padding: false) |> JSON.decode!
+    payload = Enum.at(claims, 1) |> Base.url_decode64!(padding: false) |> JSON.decode!
+    signature = Enum.at(claims, 2) |> Base.url_decode64!(padding: false)
+
+    message = Enum.join([Enum.at(claims, 0), Enum.at(claims, 1)], ".")
+
+    kid = Map.get(header, "kid")
+    chash = Map.get(payload, "c_hash")
+
+    vf = Response.verify_client(chash, code)
+    vc = Response.verify_session(payload)
+    vts = Response.verify_signature(message, signature, kid)
 
     payload
   end
