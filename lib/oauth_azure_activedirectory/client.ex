@@ -1,9 +1,8 @@
 defmodule OauthAzureActivedirectory.Client do
   alias OAuth2.Client
   alias OAuth2.Strategy.AuthCode
+  alias OauthAzureActivedirectory.Error
   alias OauthAzureActivedirectory.Response
-
-  import OauthAzureActivedirectory.Response
 
   def logout do
     client = configset[:client_id]
@@ -58,11 +57,16 @@ defmodule OauthAzureActivedirectory.Client do
     kid = Map.get(header, "kid")
     chash = Map.get(payload, "c_hash")
 
-    vts = Response.verify_signature(message, signature, kid)
-    vf = Response.verify_code(chash, code)
-    vc = Response.verify_client(payload)
+    valid_code? = Response.verify_code(chash, code)
+    valid_client? = Response.verify_client(payload)
+    valid_signature? = Response.verify_signature(message, signature, kid)
 
-    payload
+    cond do
+      !valid_code? -> {:error, Error.wrap(__MODULE__, :invalid_code)}
+      !valid_client? -> {:error, Error.wrap(__MODULE__, :invalid_client)}
+      !valid_signature? -> {:error, Error.wrap(__MODULE__, :invalid_signature)}
+      valid_code? && valid_client? && valid_signature? -> {:ok, payload}
+    end
   end
 
   defp configset do

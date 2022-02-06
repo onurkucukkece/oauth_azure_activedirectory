@@ -6,17 +6,15 @@ defmodule OauthAzureActivedirectoryTest.Response do
   alias OauthAzureActivedirectory.Http
 
   defmacro with_signature_mock(block) do
-      quote do
-        with_mock Http, [
-          request: fn
-            (url) ->
-              request = url |> String.split("/") |> Enum.reverse |> Enum.at(0)
-              case request do
-                "keys" -> "test/fixtures/web_keys.json" |> File.read!
-                _ -> "test/fixtures/openid_config.json" |> File.read!
-              end
+    quote do
+      with_mock Http, 
+        [request: fn (url) ->
+          request = url |> String.split("/") |> Enum.reverse |> Enum.at(0)
+          case request do
+            "keys" -> "test/fixtures/web_keys.json" |> File.read!
+            _ -> "test/fixtures/openid_config.json" |> File.read!
           end
-        ]
+        end]
       do
         unquote(block)
       end
