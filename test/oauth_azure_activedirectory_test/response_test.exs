@@ -1,5 +1,6 @@
 defmodule OauthAzureActivedirectoryTest.Response do
   use ExUnit.Case
+
   import Mock
 
   alias OauthAzureActivedirectory.Response
@@ -80,15 +81,15 @@ defmodule OauthAzureActivedirectoryTest.Response do
 
   describe "verify_code" do
     test "returns true when signature is valid" do
-      code = :crypto.strong_rand_bytes(16)
-      hash = :crypto.hash(:sha256, code) |> Base.url_encode64(padding: false)         
+      code = :crypto.strong_rand_bytes(32)
+      hash = :crypto.hash(:sha256, code) |>  :binary.part(0, 16) |> Base.encode64(padding: false)
 
       assert true == Response.verify_code(hash, code)
     end
 
     test "returns error when signature is invalid" do
-      code = :crypto.strong_rand_bytes(16)
       hash = :crypto.hash(:sha256, :crypto.strong_rand_bytes(16)) |> Base.url_encode64(padding: false)
+      code = :crypto.strong_rand_bytes(32)
 
       assert false == Response.verify_code(hash, code)
     end
