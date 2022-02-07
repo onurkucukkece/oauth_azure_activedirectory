@@ -1,6 +1,6 @@
 # Oauth Azure Activedirectory
 
-Omniauth authentication for Azure Active Directory using JWT.
+Omniauth client for Azure Active Directory using [Microsoft identity hybrid authorization code flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-id-token-as-well-or-hybrid-flow)
 
 https://hex.pm/packages/oauth_azure_activedirectory
 
@@ -26,8 +26,11 @@ end
 ```elixir
 config :oauth_azure_activedirectory, OauthAzureActivedirectory.Client,
   client_id: System.get_env("AZURE_CLIENT_ID"),
+  client_secret: System.get_env("AZURE_CLIENT_SECRET"),
   tenant: System.get_env("AZURE_TENANT"),
-  redirect_uri: "http://localhost:4000/auth/azureactivedirectory/callback"
+  redirect_uri: "http://localhost:4000/auth/azureactivedirectory/callback",
+  scope: "openid email profile",
+  logout_redirect_url: "http://localhost:4000/users/logout"
 ```
 
 ### Usage
@@ -51,12 +54,13 @@ defmodule MyAppWeb.AuthController do
   alias OauthAzureActivedirectory.Client
 
   def authorize(conn, _params) do
-    redirect conn, external: Client.authorize_url!(_params)
+    redirect conn, external: Client.authorize_url!
   end
 
   def callback(conn, _params) do
-    {:ok, jwt} = Client.process_callback!(conn)
-    case User.find_or_create(jwt) do
+    {:ok, payload} = Client.process_callback!(conn)
+    email = payload["email"]
+    case User.find_or_create(email) do
       {:ok, user} ->
         conn
         |> put_flash(:success, "Successfully authenticated.")
@@ -72,12 +76,11 @@ defmodule MyAppWeb.AuthController do
 end
 
 # Add a method to User model to process the data in JWT
-def find_or_create(jwt) do
-  email = jwt[:upn]
+def find_or_create(email) do
   query = from u in User, where: u.email == ^email
   case Repo.all(query) do
     [user] -> {:ok, user}
-    [] -> create_user(%{email: email, password: SecureRandom.base64(8)})
+    [] -> create_user(%{email: email, password: SecureRandom.base64(16)})
   end
 end
 ```
@@ -85,7 +88,7 @@ end
 
 ```elixir
 
-Client.authorize_url!(_params)
+Client.authorize_url!
 # will generate a url similar to 
 # https://login.microsoftonline.com/9b9eff0c-3e5t-1q2w-3e4r-fe98afcd0299/oauth2/authorize?client_id=984ebc2a-4ft5-8ea2-0000-59e43ccd614e&nonce=e22d15fa-853f-4d6a-9215-e2a206f48581&provider=azureactivedirectory&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fauth%2Fazureactivedirectory%2Fcallback&response_mode=form_post&response_type=code+id_token
 
@@ -103,8 +106,10 @@ Client.authorize_url!(_params)
   sub: "d70UoIpU-qSewpk_SI0MGktghymbNAq-klrsdEhIWfQ",
   tid: "9b9eff0c-3e5t-1q2w-3e4r-fe98afcd0299",
   unique_name: "otis.allen@company.com",
-  upn: "otis.allen@company.com", uti: "heXGJdeefedrzEuc1bQNAA",
-  ver: "1.0"}
+  email: "otis.allen@company.com",
+  uti: "heXGJdeefedrzEuc1bQNAA",
+  ver: "1.0"
+}
 
 ```
 
