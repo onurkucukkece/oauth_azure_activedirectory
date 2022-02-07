@@ -9,33 +9,16 @@ defmodule OauthAzureActivedirectory.Client do
   """
 
   @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> OauthAzureActivedirectory.hello
-      :world
+  Logout URL
 
   """
-  def logout do
+  def logout_url do
     client = configset[:client_id]
     tenant = configset[:tenant]
     logout_url = "https://login.microsoftonline.com/#{tenant}/oauth2/v2.0/logout"
     logout_redirect_url = configset[:logout_redirect_url] || configset[:redirect_uri]
 
     "#{logout_url}?client_id=#{client}&post_logout_redirect_uri=#{logout_redirect_url}"
-  end
-
-  def client do
-  	Client.new([
-      strategy: __MODULE__,
-      client_id: configset[:client_id],
-      client_secret: configset[:client_secret],
-      redirect_uri: configset[:redirect_uri],
-      logout_redirect_url: configset[:logout_redirect_url],
-      authorize_url: "https://login.microsoftonline.com/#{configset[:tenant]}/oauth2/v2.0/authorize",
-      token_url: "https://login.microsoftonline.com/#{configset[:tenant]}/oauth2/v2.0/token"
-    ])
   end
 
   def authorize_url! do
@@ -56,6 +39,18 @@ defmodule OauthAzureActivedirectory.Client do
 
   def authorize_url(client, params) do
     AuthCode.authorize_url(client, params)
+  end
+
+  def client do
+  	Client.new([
+      strategy: __MODULE__,
+      client_id: configset[:client_id],
+      client_secret: configset[:client_secret],
+      redirect_uri: configset[:redirect_uri],
+      logout_redirect_url: configset[:logout_redirect_url],
+      authorize_url: "https://login.microsoftonline.com/#{configset[:tenant]}/oauth2/v2.0/authorize",
+      token_url: "https://login.microsoftonline.com/#{configset[:tenant]}/oauth2/v2.0/token"
+    ])
   end
 
   def process_callback!(%{params: %{"id_token" => id_token, "code" => code}}) do

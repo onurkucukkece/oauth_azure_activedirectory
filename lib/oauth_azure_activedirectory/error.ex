@@ -9,11 +9,6 @@ defmodule OauthAzureActivedirectory.Error do
   @spec wrap(module(), atom()) :: t()
   def wrap(module, reason), do: %__MODULE__{module: module, reason: reason}
 
-  @spec wrap(module(), atom(), Ecto.Changeset.t()) :: t()
-  def wrap(module, reason, changeset) do
-    %__MODULE__{module: module, reason: reason}
-  end
-
   @doc """
   Return the message for the given error.
 
