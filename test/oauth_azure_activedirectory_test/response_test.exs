@@ -80,14 +80,14 @@ defmodule OauthAzureActivedirectoryTest.Response do
   end
 
   describe "verify_code" do
-    test "returns true when signature is valid" do
+    test "returns true when code is valid" do
       code = :crypto.strong_rand_bytes(32)
-      hash = :crypto.hash(:sha256, code) |>  :binary.part(0, 16) |> Base.encode64(padding: false)
+      hash = :crypto.hash(:sha256, code) |>  :binary.part(0, 16) |> Base.url_encode64(padding: false)
 
       assert true == Response.verify_code(hash, code)
     end
 
-    test "returns error when signature is invalid" do
+    test "returns error when code is invalid" do
       hash = :crypto.hash(:sha256, :crypto.strong_rand_bytes(16)) |> Base.url_encode64(padding: false)
       code = :crypto.strong_rand_bytes(32)
 
