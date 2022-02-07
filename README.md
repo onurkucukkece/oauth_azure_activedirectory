@@ -107,7 +107,7 @@ Client.authorize_url!
   ...
 }
 
-For all attributes, see _claims\_supported_ in https://login.microsoftonline.com/common/.well-known/openid-configuration
+# For all attributes, see _claims\_supported_ in https://login.microsoftonline.com/common/.well-known/openid-configuration
 
 ```
 
