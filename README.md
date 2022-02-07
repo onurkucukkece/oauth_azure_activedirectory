@@ -92,24 +92,22 @@ Client.authorize_url!
 # will generate a url similar to 
 # https://login.microsoftonline.com/9b9eff0c-3e5t-1q2w-3e4r-fe98afcd0299/oauth2/authorize?client_id=984ebc2a-4ft5-8ea2-0000-59e43ccd614e&nonce=e22d15fa-853f-4d6a-9215-e2a206f48581&provider=azureactivedirectory&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fauth%2Fazureactivedirectory%2Fcallback&response_mode=form_post&response_type=code+id_token
 
-{:ok, jwt} = Client.process_callback!(conn)
+{:ok, payload} = Client.process_callback!(conn)
 # On a successful callback, jwt variable will return something like below.
 
-%{aio: "ASQA2/5GDSAjMRuLsckD5QfrTG6aYZvsKvIZD2py9OqC8po/LQ6QA=", amr: ["pwd"],
-  aud: "984ebc2a-4ft5-8ea2-0000-59e43ccd614e", c_hash: "ljiphg5fTpgfreh65owaQ",
-  exp: 1515604135, family_name: "Allen", given_name: "Otis",
-  iat: 1515600235, ipaddr: "92.7.119.241",
-  iss: "https://sts.windows.net/9b9eff0c-3e5t-1q2w-3e4r-fe98afcd0299/",
-  name: "Otis Allen", nbf: 1515600235,
+%{
+  exp: 1515604135,
+  family_name: "Allen",
+  given_name: "Otis",
+  name: "Otis Allen",
   nonce: "e22d15fa-853f-4d6a-9215-e2a206f48581",
-  oid: "0110c209-b543-4aac-b156-7f406a4f98d0",
-  sub: "d70UoIpU-qSewpk_SI0MGktghymbNAq-klrsdEhIWfQ",
-  tid: "9b9eff0c-3e5t-1q2w-3e4r-fe98afcd0299",
-  unique_name: "otis.allen@company.com",
   email: "otis.allen@company.com",
   uti: "heXGJdeefedrzEuc1bQNAA",
-  ver: "1.0"
+  ver: "2.0"
+  ...
 }
+
+For all attributes, see _claims\_supported_ in https://login.microsoftonline.com/common/.well-known/openid-configuration
 
 ```
 
