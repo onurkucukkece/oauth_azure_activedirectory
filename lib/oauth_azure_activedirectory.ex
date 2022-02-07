@@ -4,12 +4,7 @@ defmodule OauthAzureActivedirectory do
   """
 
   @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> OauthAzureActivedirectory.hello
-      :world
+  Configuration.
 
   """
 
