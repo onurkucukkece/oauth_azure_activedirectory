@@ -4,12 +4,10 @@ defmodule OauthAzureActivedirectory do
   """
 
   @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> OauthAzureActivedirectory.hello
-      :world
-
+  Return configuration set.
   """
+
+  def config do
+    Application.get_env(:oauth_azure_activedirectory, OauthAzureActivedirectory.Client)
+  end
 end
