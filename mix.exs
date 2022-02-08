@@ -5,13 +5,13 @@ defmodule OauthAzureActivedirectory.Mixfile do
     [
       app: :oauth_azure_activedirectory,
       version: "0.1.2",
-      elixir: "~> 1.5",
+      elixir: "~> 1.9",
       start_permanent: Mix.env == :prod,
       deps: deps(),
       package: package(),
       description: description(),
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test]
+      preferred_cli_env: [coveralls: :test, "coveralls.detail": :test, "coveralls.circle": :test, "coveralls.html": :test]
     ]
   end
 
@@ -25,12 +25,13 @@ defmodule OauthAzureActivedirectory.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:oauth2, "~> 0.9.2"},
+      {:oauth2, "~> 2.0"},
       {:json, "~> 1.0"},
-      {:json_web_token, "~> 0.2"},
       {:secure_random, "~> 0.5"},
       {:ex_doc, ">= 0.0.0", only: :dev},
-      {:excoveralls, "~> 0.8", only: :test}
+      {:mock, "~> 0.3.0", only: :test},
+      {:excoveralls, "~> 0.10", only: :test},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
     ]
   end
 

@@ -1,0 +1,16 @@
+{
+  "jwks_uri": "https://login.microsoftonline.com/042153ca-e0a2-45ba-b335-9e9a06632174/discovery/v2.0/keys",
+  "issuer": "https://login.microsoftonline.com/042153ca-e0a2-45ba-b335-9e9a06632174/v2.0",
+  "end_session_endpoint": "https://login.microsoftonline.com/042153ca-e0a2-45ba-b335-9e9a06632174/oauth2/v2.0/logout",
+  "claims_supported": [
+    "sub",
+    "iss",
+    "aud",
+    "exp",
+    "iat",
+    "nonce",
+    "tid",
+    "c_hash",
+    "email"
+  ]
+}

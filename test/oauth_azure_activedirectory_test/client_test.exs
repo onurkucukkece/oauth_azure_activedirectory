@@ -1,38 +1,101 @@
 defmodule OauthAzureActivedirectoryTest.Client do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
 
-  doctest OauthAzureActivedirectory.Client
+  import Mock
 
-  test "returns authorization url" do
-    app_config = Application.get_env(:oauth_azure_activedirectory, OauthAzureActivedirectory.Client)
-		auth_url = OauthAzureActivedirectory.Client.authorize_url!(%{})
-		url = URI.parse auth_url
-  	
-    assert url.host == "login.microsoftonline.com"
-    assert url.path == "/#{app_config[:tenant]}/oauth2/authorize"
-    assert url.port == 443
+  alias OauthAzureActivedirectory.Client
+  alias OauthAzureActivedirectory.Error
+  alias OauthAzureActivedirectory.Response
 
-    url_query = URI.decode_query(url.query)
-    assert url_query["client_id"] == app_config[:client_id]
-    assert url_query["response_mode"] == "form_post"
-    assert url_query["response_type"] == "code id_token"
-    assert String.match?(url_query["nonce"], ~r/^[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12}$/)
+  describe "logout_url" do
+    test "returns logout url" do
+      app_config = Application.get_env(:oauth_azure_activedirectory, OauthAzureActivedirectory.Client)
+  		auth_url = OauthAzureActivedirectory.Client.logout_url
+  		url = URI.parse auth_url
+
+      assert url.host == "login.microsoftonline.com"
+      assert url.path == "/#{app_config[:tenant]}/oauth2/v2.0/logout"
+      assert url.port == 443
+
+      url_query = URI.decode_query(url.query)
+      assert url_query["client_id"] == app_config[:client_id]
+      assert url_query["post_logout_redirect_uri"] == app_config[:redirect_uri]
+    end
   end
 
-  test "returns decoded jwt token" do
-    app_config = Application.get_env(:oauth_azure_activedirectory, OauthAzureActivedirectory.Client)
-    case :httpc.request(:get, {to_charlist(System.get_env("TEST_TOKEN_URL")), []}, [], []) do
-      {:ok, response} -> 
-          {{_, 200, 'OK'}, _headers, body} = response
-          {:ok, json} = JSON.decode body
-          params = %{params: json}
-          {:ok, jwt} = OauthAzureActivedirectory.Client.process_callback!(params)
-          assert jwt[:given_name] == "Onur"
-          assert jwt[:family_name] == "Kucukkece"
-          assert jwt[:tid] == app_config[:tenant]
-          assert jwt[:c_hash] == "FWkv4C_hs-f_195tbgkUjw"
-      {:error} -> false
+  describe "authorize_url!" do
+    test "returns authorize url" do
+      app_config = Application.get_env(:oauth_azure_activedirectory, OauthAzureActivedirectory.Client)
+  		auth_url = OauthAzureActivedirectory.Client.authorize_url!
+  		url = URI.parse auth_url
+
+      assert url.host == "login.microsoftonline.com"
+      assert url.path == "/#{app_config[:tenant]}/oauth2/v2.0/authorize"
+      assert url.port == 443
+
+      url_query = URI.decode_query(url.query)
+      assert url_query["client_id"] == app_config[:client_id]
+      assert url_query["response_mode"] == "form_post"
+      assert url_query["response_type"] == "code id_token"
+      assert url_query["code_challenge_method"] == "S256"
+      assert String.match?(url_query["code_challenge"], ~r/^[-A-Za-z0-9+=]{1,50}|=[^=]|={3,}$/)
+      assert String.match?(url_query["nonce"], ~r/^[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12}$/)
+    end
+  end
+
+  describe "callback_params" do
+    test "returns payload when request is valid" do
+      with_mock Response,
+        [
+          verify_code: fn(_, _) -> true end,
+          verify_client: fn(_) -> true end,
+          verify_signature: fn(_, _, _) -> true end
+        ]
+      do
+        payload = %{"c_hash" => "MeUkiAQXgYSiaiAYZacYEA"}
+        payload_encoded = payload |> JSON.encode! |> Base.url_encode64(padding: false)
+        params = %{params: %{"id_token" => "e30.#{payload_encoded}.", "code" => "code"}}
+        assert {:ok, payload} == Client.callback_params(params)
+      end
+    end
+
+    test "returns invalid code error when code is not valid" do
+      with_mock Response,
+        [
+          verify_code: fn(_, _) -> false end,
+          verify_client: fn(_) -> true end,
+          verify_signature: fn(_, _, _) -> true end
+        ]
+      do
+        params = %{params: %{"id_token" => "e30.e30.", "code" => "code"}}
+        assert {:error, %Error{module: Client, reason: :invalid_code}} == Client.callback_params(params)
+      end
+    end
+
+    test "returns invalid client error when client is not valid" do
+      with_mock Response,
+        [
+          verify_code: fn(_, _) -> true end,
+          verify_client: fn(_) -> false end,
+          verify_signature: fn(_, _, _) -> true end
+        ]
+      do
+        params = %{params: %{"id_token" => "e30.e30.", "code" => "code"}}
+        assert {:error, %Error{module: Client, reason: :invalid_client}} == Client.callback_params(params)
+      end
+    end
+
+    test "returns invalid signature error when signature is not valid" do
+      with_mock Response,
+        [
+          verify_code: fn(_, _) -> true end,
+          verify_client: fn(_) -> true end,
+          verify_signature: fn(_, _, _) -> false end
+        ]
+      do
+        params = %{params: %{"id_token" => "e30.e30.", "code" => "code"}}
+        assert {:error, %Error{module: Client, reason: :invalid_signature}} == Client.callback_params(params)
+      end
     end
   end
 end
-
