@@ -1,7 +1,6 @@
 defmodule OauthAzureActivedirectory.Client do
   alias OAuth2.Client
   alias OAuth2.Strategy.AuthCode
-  alias JsonWebToken.Algorithm.RsaUtil
   alias OauthAzureActivedirectory.NonceAgent
 
   def logout(redirect_uri) do
@@ -55,7 +54,6 @@ defmodule OauthAzureActivedirectory.Client do
       key: public
     }
 
-    {:ok, claims} = JsonWebToken.verify(id_token, opts)
     verify_token(code, claims)
   end
 
