@@ -1,6 +1,6 @@
 defmodule OauthAzureActivedirectory.Http do
   @moduledoc """
-  Documentation for OauthAzureActivedirectory.
+  Documentation for OauthAzureActivedirectory.Http
   """
 
   @doc """
