@@ -26,9 +26,10 @@ defmodule OauthAzureActivedirectory.Client do
   Return authorize URL
 
   """
-  def authorize_url! do
-    key = :crypto.strong_rand_bytes(64) |> Base.url_encode64
-    code_challenge = :crypto.hash(:sha256, key)  |> Base.url_encode64(padding: false)
+
+  def authorize_url!(state) do
+    code_verifier = :crypto.strong_rand_bytes(64) |> Base.url_encode64
+    code_challenge = :crypto.hash(:sha256, code_verifier)  |> Base.url_encode64(padding: false)
 
     params = %{
       response_mode: "form_post",
@@ -36,8 +37,13 @@ defmodule OauthAzureActivedirectory.Client do
       scope: configset[:scope] || "openid email",
       code_challenge: code_challenge,
       code_challenge_method: "S256",
+      code_verifier: code_verifier,
       nonce: SecureRandom.uuid
     }
+    case state do
+      nil -> params
+      _ -> params |> Map.put(:state, state)
+    end
 
     Client.authorize_url!(client, params)
   end
