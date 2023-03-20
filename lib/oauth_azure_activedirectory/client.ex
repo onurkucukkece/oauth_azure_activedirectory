@@ -14,10 +14,10 @@ defmodule OauthAzureActivedirectory.Client do
 
   """
   def logout_url do
-    client = configset[:client_id]
-    tenant = configset[:tenant]
+    client = configset()[:client_id]
+    tenant = configset()[:tenant]
     logout_url = "https://login.microsoftonline.com/#{tenant}/oauth2/v2.0/logout"
-    logout_redirect_url = configset[:logout_redirect_url] || configset[:redirect_uri]
+    logout_redirect_url = configset()[:logout_redirect_url] || configset()[:redirect_uri]
 
     "#{logout_url}?client_id=#{client}&post_logout_redirect_uri=#{logout_redirect_url}"
   end
@@ -34,7 +34,7 @@ defmodule OauthAzureActivedirectory.Client do
     params = %{
       response_mode: "form_post",
       response_type: "code id_token",
-      scope: configset[:scope] || "openid email",
+      scope: configset()[:scope] || "openid email",
       code_challenge: code_challenge,
       code_challenge_method: "S256",
       code_verifier: code_verifier,
@@ -45,7 +45,7 @@ defmodule OauthAzureActivedirectory.Client do
       _ -> params |> Map.put(:state, state)
     end
 
-    Client.authorize_url!(client, params)
+    Client.authorize_url!(client(), params)
   end
 
   def authorize_url(client, params) do
@@ -55,12 +55,12 @@ defmodule OauthAzureActivedirectory.Client do
   def client do
   	Client.new([
       strategy: __MODULE__,
-      client_id: configset[:client_id],
-      client_secret: configset[:client_secret],
-      redirect_uri: configset[:redirect_uri],
-      logout_redirect_url: configset[:logout_redirect_url],
-      authorize_url: "https://login.microsoftonline.com/#{configset[:tenant]}/oauth2/v2.0/authorize",
-      token_url: "https://login.microsoftonline.com/#{configset[:tenant]}/oauth2/v2.0/token"
+      client_id: configset()[:client_id],
+      client_secret: configset()[:client_secret],
+      redirect_uri: configset()[:redirect_uri],
+      logout_redirect_url: configset()[:logout_redirect_url],
+      authorize_url: "https://login.microsoftonline.com/#{configset()[:tenant]}/oauth2/v2.0/authorize",
+      token_url: "https://login.microsoftonline.com/#{configset()[:tenant]}/oauth2/v2.0/token"
     ])
   end
 
@@ -94,7 +94,7 @@ defmodule OauthAzureActivedirectory.Client do
 
   defdelegate process_callback!(params), to: __MODULE__, as: :callback_params
 
-  defp configset do
+  defp configset() do
     OauthAzureActivedirectory.config
   end
 end
