@@ -40,7 +40,7 @@ defmodule OauthAzureActivedirectory.Client do
       code_verifier: code_verifier,
       nonce: SecureRandom.uuid
     }
-    case state do
+    params = case state do
       nil -> params
       _ -> params |> Map.put(:state, state)
     end
