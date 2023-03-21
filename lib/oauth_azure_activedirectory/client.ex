@@ -45,10 +45,13 @@ defmodule OauthAzureActivedirectory.Client do
       _ -> params |> Map.put(:state, state)
     end
 
+    params = Map.to_list(params)
+
     Client.authorize_url!(client(), params)
   end
 
   def authorize_url(client, params) do
+    params = Map.new(params)
     AuthCode.authorize_url(client, params)
   end
 
