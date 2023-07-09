@@ -90,7 +90,7 @@ end
 
 Client.authorize_url!
 # will generate a url similar to 
-# https://login.microsoftonline.com/9b9eff0c-3e5t-1q2w-3e4r-fe98afcd0299/oauth2/authorize?client_id=984ebc2a-4ft5-8ea2-0000-59e43ccd614e&nonce=e22d15fa-853f-4d6a-9215-e2a206f48581&provider=azureactivedirectory&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fauth%2Fazureactivedirectory%2Fcallback&response_mode=form_post&response_type=code+id_token
+# https://login.microsoftonline.com/9b9eff0c-3e5t-1q2w-3e4r-fe98afcd0299/oauth2/v2.0/authorize?client_id=984ebc2a-4ft5-8ea2-0000-59e43ccd614e&nonce=e22d15fa-853f-4d6a-9215-e2a206f48581&provider=azureactivedirectory&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fauth%2Fazureactivedirectory%2Fcallback&response_mode=form_post&response_type=code+id_token
 
 {:ok, payload} = Client.callback_params(conn)
 # On a successful callback, jwt variable will return something like below.
@@ -107,13 +107,13 @@ Client.authorize_url!
   ...
 }
 
-# For all attributes, see claims_supported in https://login.microsoftonline.com/common/.well-known/openid-configuration
+# For all attributes, see claims_supported in https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration
 
 ```
 
 ### Useful links
 [Azure AD token reference](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-token-and-claims)
 
-[Microsoft OpenID discovery document.](https://login.microsoftonline.com/common/.well-known/openid-configuration)
+[Microsoft OpenID discovery document.](https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration)
 
-[Trusted CA certificate for Azure Cloud Services](https://www.digicert.com/CACerts/BaltimoreCyberTrustRoot.crt.pem)
+[Trusted CA certificates for Azure Cloud Services](https://docs.microsoft.com/en-us/azure/security/fundamentals/tls-certificate-changes)
