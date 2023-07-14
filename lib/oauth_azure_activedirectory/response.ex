@@ -1,8 +1,6 @@
 defmodule OauthAzureActivedirectory.Response do
   alias OauthAzureActivedirectory.Http
 
-  import OauthAzureActivedirectory.Http
-
   @moduledoc """
   Documentation for OauthAzureActivedirectory.Response
   """
@@ -29,8 +27,8 @@ defmodule OauthAzureActivedirectory.Response do
   def verify_client(claims) do
     now = :os.system_time(:second)
 
-    Map.get(claims, "aud") == configset[:client_id] and
-    Map.get(claims, "tid") == configset[:tenant] and
+    Map.get(claims, "aud") == configset()[:client_id] and
+    Map.get(claims, "tid") == configset()[:tenant] and
     Map.get(claims, "iss") == openid_configuration("issuer") and
     # time checks
     now < Map.get(claims, "exp") and
@@ -59,7 +57,7 @@ defmodule OauthAzureActivedirectory.Response do
   end
 
   defp get_discovery_key(url, kid) do
-    {status, list} = 
+    {status, list} =
       url
       |> Http.request
       |> JSON.decode
@@ -73,8 +71,8 @@ defmodule OauthAzureActivedirectory.Response do
   end
 
   def openid_configuration(key) do
-    url = "https://login.microsoftonline.com/#{configset[:tenant]}/v2.0/.well-known/openid-configuration"
-    
+    url = "https://login.microsoftonline.com/#{configset()[:tenant]}/v2.0/.well-known/openid-configuration"
+
     openid_config = Http.request(url) |> JSON.decode!
     openid_config[key]
   end
@@ -93,7 +91,7 @@ defmodule OauthAzureActivedirectory.Response do
     |> :public_key.pem_encode
   end
 
-  defp configset do
+  defp configset() do
     OauthAzureActivedirectory.config
   end
 end
