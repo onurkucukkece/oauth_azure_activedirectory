@@ -26,7 +26,7 @@ defmodule OauthAzureActivedirectoryTest.Client do
   describe "authorize_url!" do
     test "returns authorize url" do
       app_config = Application.get_env(:oauth_azure_activedirectory, OauthAzureActivedirectory.Client)
-  		auth_url = OauthAzureActivedirectory.Client.authorize_url!
+  		auth_url = OauthAzureActivedirectory.Client.authorize_url!(nil)
   		url = URI.parse auth_url
 
       assert url.host == "login.microsoftonline.com"
