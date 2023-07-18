@@ -5,7 +5,7 @@ defmodule OauthAzureActivedirectory.Client do
   alias OauthAzureActivedirectory.Response
 
   @moduledoc """
-  Documentation for OauthAzureActivedirectory.Client
+  Documentation for OauthAzureActivedirectory.Client(state)
   """
   @moduledoc since: "1.0.0"
 

@@ -54,7 +54,7 @@ defmodule MyAppWeb.AuthController do
   alias OauthAzureActivedirectory.Client
 
   def authorize(conn, _params) do
-    redirect conn, external: Client.authorize_url!
+    redirect conn, external: Client.authorize_url!(state)
   end
 
   def callback(conn, _params) do
