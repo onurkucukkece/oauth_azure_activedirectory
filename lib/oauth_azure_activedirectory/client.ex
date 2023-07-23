@@ -5,7 +5,7 @@ defmodule OauthAzureActivedirectory.Client do
   alias OauthAzureActivedirectory.Response
 
   @moduledoc """
-  Documentation for OauthAzureActivedirectory.Client(state)
+  Documentation for OauthAzureActivedirectory.Client()
   """
   @moduledoc since: "1.0.0"
 
@@ -27,7 +27,7 @@ defmodule OauthAzureActivedirectory.Client do
 
   """
 
-  def authorize_url!(state) do
+  def authorize_url!(state \\ nil) do
     code_verifier = :crypto.strong_rand_bytes(64) |> Base.url_encode64
     code_challenge = :crypto.hash(:sha256, code_verifier)  |> Base.url_encode64(padding: false)
 
