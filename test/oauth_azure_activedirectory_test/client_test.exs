@@ -10,8 +10,8 @@ defmodule OauthAzureActivedirectoryTest.Client do
   describe "logout_url" do
     test "returns logout url" do
       app_config = Application.get_env(:oauth_azure_activedirectory, OauthAzureActivedirectory.Client)
-  		auth_url = OauthAzureActivedirectory.Client.logout_url
-  		url = URI.parse auth_url
+      auth_url = OauthAzureActivedirectory.Client.logout_url
+      url = URI.parse auth_url
 
       assert url.host == "login.microsoftonline.com"
       assert url.path == "/#{app_config[:tenant]}/oauth2/v2.0/logout"
@@ -26,8 +26,8 @@ defmodule OauthAzureActivedirectoryTest.Client do
   describe "authorize_url!" do
     test "returns authorize url" do
       app_config = Application.get_env(:oauth_azure_activedirectory, OauthAzureActivedirectory.Client)
-  		auth_url = OauthAzureActivedirectory.Client.authorize_url!(nil)
-  		url = URI.parse auth_url
+      auth_url = OauthAzureActivedirectory.Client.authorize_url!()
+      url = URI.parse auth_url
 
       assert url.host == "login.microsoftonline.com"
       assert url.path == "/#{app_config[:tenant]}/oauth2/v2.0/authorize"
@@ -40,6 +40,13 @@ defmodule OauthAzureActivedirectoryTest.Client do
       assert url_query["code_challenge_method"] == "S256"
       assert String.match?(url_query["code_challenge"], ~r/^[-A-Za-z0-9+=]{1,50}|=[^=]|={3,}$/)
       assert String.match?(url_query["nonce"], ~r/^[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12}$/)
+    end
+
+    test "allows custom state for multiple requests" do
+      auth_url = OauthAzureActivedirectory.Client.authorize_url!("custom_state")
+      url = URI.parse auth_url
+      url_query = URI.decode_query(url.query)
+      assert url_query["state"] == "custom_state"
     end
   end
 
