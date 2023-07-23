@@ -14,12 +14,11 @@ defmodule OauthAzureActivedirectory.Client do
 
   """
   def logout_url do
-    client = configset()[:client_id]
-    tenant = configset()[:tenant]
-    logout_url = "https://login.microsoftonline.com/#{tenant}/oauth2/v2.0/logout"
+    client_id = configset()[:client_id]
+    logout_url = "#{request_url()}/logout"
     logout_redirect_url = configset()[:logout_redirect_url] || configset()[:redirect_uri]
 
-    "#{logout_url}?client_id=#{client}&post_logout_redirect_uri=#{logout_redirect_url}"
+    "#{logout_url}?client_id=#{client_id}&post_logout_redirect_uri=#{logout_redirect_url}"
   end
 
   @doc """
@@ -62,8 +61,8 @@ defmodule OauthAzureActivedirectory.Client do
       client_secret: configset()[:client_secret],
       redirect_uri: configset()[:redirect_uri],
       logout_redirect_url: configset()[:logout_redirect_url],
-      authorize_url: "https://login.microsoftonline.com/#{configset()[:tenant]}/oauth2/v2.0/authorize",
-      token_url: "https://login.microsoftonline.com/#{configset()[:tenant]}/oauth2/v2.0/token"
+      authorize_url: "#{request_url()}/authorize",
+      token_url: "#{request_url()}/token"
     ])
   end
 
@@ -99,5 +98,9 @@ defmodule OauthAzureActivedirectory.Client do
 
   defp configset() do
     OauthAzureActivedirectory.config
+  end
+
+  defp request_url do
+    OauthAzureActivedirectory.request_url()
   end
 end

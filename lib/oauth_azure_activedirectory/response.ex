@@ -71,7 +71,7 @@ defmodule OauthAzureActivedirectory.Response do
   end
 
   def openid_configuration(key) do
-    url = "https://login.microsoftonline.com/#{configset()[:tenant]}/v2.0/.well-known/openid-configuration"
+    url = "#{OauthAzureActivedirectory.base_url()}/#{configset()[:tenant]}/v2.0/.well-known/openid-configuration"
 
     openid_config = Http.request(url) |> JSON.decode!
     openid_config[key]
