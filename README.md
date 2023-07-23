@@ -17,7 +17,7 @@ by adding `oauth_azure_activedirectory` to your list of dependencies in `mix.exs
 ```elixir
 def deps do
   [
-    {:oauth_azure_activedirectory, "~> 1.0.0"}
+    {:oauth_azure_activedirectory, "~> 1.1"}
   ]
 end
 ```
