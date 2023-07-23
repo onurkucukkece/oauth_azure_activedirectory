@@ -96,8 +96,8 @@ defmodule OauthAzureActivedirectory.Client do
 
   defdelegate process_callback!(params), to: __MODULE__, as: :callback_params
 
-  defp configset() do
-    OauthAzureActivedirectory.config
+  defp configset do
+    OauthAzureActivedirectory.config()
   end
 
   defp request_url do

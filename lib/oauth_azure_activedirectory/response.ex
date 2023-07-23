@@ -91,7 +91,7 @@ defmodule OauthAzureActivedirectory.Response do
     |> :public_key.pem_encode
   end
 
-  defp configset() do
+  defp configset do
     OauthAzureActivedirectory.config
   end
 end
