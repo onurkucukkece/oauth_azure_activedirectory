@@ -10,8 +10,8 @@ defmodule OauthAzureActivedirectoryTest.Client do
   describe "logout_url" do
     test "returns logout url" do
       app_config = Application.get_env(:oauth_azure_activedirectory, OauthAzureActivedirectory.Client)
-  		auth_url = OauthAzureActivedirectory.Client.logout_url
-  		url = URI.parse auth_url
+      auth_url = OauthAzureActivedirectory.Client.logout_url
+      url = URI.parse auth_url
 
       assert url.host == "login.microsoftonline.com"
       assert url.path == "/#{app_config[:tenant]}/oauth2/v2.0/logout"
@@ -26,8 +26,8 @@ defmodule OauthAzureActivedirectoryTest.Client do
   describe "authorize_url!" do
     test "returns authorize url" do
       app_config = Application.get_env(:oauth_azure_activedirectory, OauthAzureActivedirectory.Client)
-  		auth_url = OauthAzureActivedirectory.Client.authorize_url!()
-  		url = URI.parse auth_url
+      auth_url = OauthAzureActivedirectory.Client.authorize_url!()
+      url = URI.parse auth_url
 
       assert url.host == "login.microsoftonline.com"
       assert url.path == "/#{app_config[:tenant]}/oauth2/v2.0/authorize"
@@ -43,8 +43,8 @@ defmodule OauthAzureActivedirectoryTest.Client do
     end
 
     test "allows custom state for multiple requests" do
-  		auth_url = OauthAzureActivedirectory.Client.authorize_url!("custom_state")
-  		url = URI.parse auth_url
+      auth_url = OauthAzureActivedirectory.Client.authorize_url!("custom_state")
+      url = URI.parse auth_url
       url_query = URI.decode_query(url.query)
       assert url_query["state"] == "custom_state"
     end
