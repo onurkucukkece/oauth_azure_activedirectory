@@ -54,7 +54,7 @@ defmodule MyAppWeb.AuthController do
   alias OauthAzureActivedirectory.Client
 
   def authorize(conn, _params) do
-    redirect conn, external: Client.authorize_url!
+    redirect conn, external: Client.authorize_url!()
     # Alternatively, you can pass a custom state to identify multiple requests/callbacks
     # redirect conn, external: Client.authorize_url!("custom-state")
   end
@@ -85,6 +85,9 @@ def find_or_create(email) do
     [] -> create_user(%{email: email, password: SecureRandom.base64(16)})
   end
 end
+
+# Use logout_url function in your views to sign out from Microsoft
+link("Logout", to: OauthAzureActivedirectory.Client.logout_url()) 
 ```
 ### Information
 
