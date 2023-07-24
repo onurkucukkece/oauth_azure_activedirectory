@@ -92,6 +92,6 @@ defmodule OauthAzureActivedirectory.Response do
   end
 
   defp configset do
-    OauthAzureActivedirectory.config
+    OauthAzureActivedirectory.config()
   end
 end

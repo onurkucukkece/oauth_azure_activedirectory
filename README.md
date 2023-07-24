@@ -33,7 +33,10 @@ config :oauth_azure_activedirectory, OauthAzureActivedirectory.Client,
   logout_redirect_url: "http://localhost:4000/users/logout"
 ```
 
-### Usage
+### Azure AD
+Enable `ID tokens` for Implicit grant and hybrid flows in authentication settings of your Azure AD application.
+
+## Usage
 
 ```elixir
 # Add your routes, i.e.
@@ -89,7 +92,7 @@ end
 # Use logout_url function in your views to sign out from Microsoft
 link("Logout", to: OauthAzureActivedirectory.Client.logout_url()) 
 ```
-### Information
+## Information
 
 ```elixir
 
@@ -116,7 +119,7 @@ Client.authorize_url!
 
 ```
 
-### Useful links
+## Useful links
 [Azure AD token reference](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-token-and-claims)
 
 [Microsoft OpenID discovery document.](https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration)
