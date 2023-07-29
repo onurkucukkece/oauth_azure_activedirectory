@@ -89,14 +89,30 @@ def find_or_create(email) do
   end
 end
 
-# Use logout_url function in your views to sign out from Microsoft
-link("Logout", to: OauthAzureActivedirectory.Client.logout_url()) 
 ```
+
+### Signing users out
+```elixir
+OauthAzureActivedirectory.Client.logout_url()
+# will return Azure end session URL
+```
+**⚠️ In some Chrome versions users are not redirected to `logout_redirect_url` after signing out from their Microsoft account.**
+
+To make sure that the users end their session in your application, you can do one of the following
+
+- Set a Front-channel logout URL in your Azure application.
+
+  Once users sign out from their Microsoft account, a silent request will be sent to logout URL with a `sid` attribute in query parameters which matches the `session_state` that was sent in callbak payload. 
+- Add `logout_hint` to logout URL. That will sign users out from their Microsoft account without allowing them to choose which user to logout. This somehow fixes broken redirection. To do that
+  1. Add `login_hint` optional ID claim to your Azure application as descibed [here](https://learn.microsoft.com/en-us/azure/active-directory/develop/optional-claims). This will add `login_hint` attribute to callback payload.
+  2. Store the hint along with user session
+  3. Pass it to `Client.logout_url(logout_hint)` function 
+
 ## Information
 
 ```elixir
 
-Client.authorize_url!
+Client.authorize_url!()
 # will generate a url similar to 
 # https://login.microsoftonline.com/9b9eff0c-3e5t-1q2w-3e4r-fe98afcd0299/oauth2/v2.0/authorize?client_id=984ebc2a-4ft5-8ea2-0000-59e43ccd614e&nonce=e22d15fa-853f-4d6a-9215-e2a206f48581&provider=azureactivedirectory&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fauth%2Fazureactivedirectory%2Fcallback&response_mode=form_post&response_type=code+id_token
 
