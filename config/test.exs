@@ -5,4 +5,5 @@ import Config
 config :oauth_azure_activedirectory, OauthAzureActivedirectory.Client,
   client_id: "58b6472d-deb6-4062-b0fc-88fb4972491e",
   tenant: "042153ca-e0a2-45ba-b335-9e9a06632174",
-  redirect_uri: "http://localhost:4000/auth/azureactivedirectory/callback"
+  redirect_uri: "http://localhost:4000/auth/azureactivedirectory/callback",
+  logout_redirect_url: "http://localhost:4000/users/logout"

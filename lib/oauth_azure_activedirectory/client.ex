@@ -10,23 +10,29 @@ defmodule OauthAzureActivedirectory.Client do
   @moduledoc since: "1.0.0"
 
   @doc """
-  Return logout URL and set optional logout redirect URL
+  Return logout URL with optional logout hint
 
   """
-  def logout_url do
-    client = configset()[:client_id]
-    tenant = configset()[:tenant]
-    logout_url = "https://login.microsoftonline.com/#{tenant}/oauth2/v2.0/logout"
-    logout_redirect_url = configset()[:logout_redirect_url] || configset()[:redirect_uri]
+  def logout_url(logout_hint \\ nil) do
+    params = %{
+      client_id: configset()[:client_id],
+      post_logout_redirect_uri: configset()[:logout_redirect_url] # || configset()[:redirect_uri]
+    }
 
-    "#{logout_url}?client_id=#{client}&post_logout_redirect_uri=#{logout_redirect_url}"
+    params = case logout_hint do
+      nil -> params
+      _ -> Map.put(params, :logout_hint, logout_hint)
+    end
+
+    params_query = Enum.map_join(params, "&", fn {k, v} -> "#{k}=#{v}" end)
+
+    "#{request_url()}/logout?#{params_query}"
   end
 
   @doc """
-  Return authorize URL
+  Return authorize URL with optional custom state
 
   """
-
   def authorize_url!(state \\ nil) do
     code_verifier = :crypto.strong_rand_bytes(64) |> Base.url_encode64
     code_challenge = :crypto.hash(:sha256, code_verifier)  |> Base.url_encode64(padding: false)
@@ -62,8 +68,8 @@ defmodule OauthAzureActivedirectory.Client do
       client_secret: configset()[:client_secret],
       redirect_uri: configset()[:redirect_uri],
       logout_redirect_url: configset()[:logout_redirect_url],
-      authorize_url: "https://login.microsoftonline.com/#{configset()[:tenant]}/oauth2/v2.0/authorize",
-      token_url: "https://login.microsoftonline.com/#{configset()[:tenant]}/oauth2/v2.0/token"
+      authorize_url: "#{request_url()}/authorize",
+      token_url: "#{request_url()}/token"
     ])
   end
 
@@ -74,8 +80,8 @@ defmodule OauthAzureActivedirectory.Client do
   def callback_params(%{params: %{"id_token" => id_token, "code" => code}}) do
     claims = id_token |> String.split(".")
 
-    header = Enum.at(claims, 0) |> Base.url_decode64!(padding: false) |> JSON.decode!
-    payload = Enum.at(claims, 1) |> Base.url_decode64!(padding: false) |> JSON.decode!
+    header = Enum.at(claims, 0) |> Base.url_decode64!(padding: false) |> JSON.decode!()
+    payload = Enum.at(claims, 1) |> Base.url_decode64!(padding: false) |> JSON.decode!()
     signature = Enum.at(claims, 2) |> Base.url_decode64!(padding: false)
 
     message = Enum.join([Enum.at(claims, 0), Enum.at(claims, 1)], ".")
@@ -97,7 +103,11 @@ defmodule OauthAzureActivedirectory.Client do
 
   defdelegate process_callback!(params), to: __MODULE__, as: :callback_params
 
-  defp configset() do
-    OauthAzureActivedirectory.config
+  defp configset do
+    OauthAzureActivedirectory.config()
+  end
+
+  defp request_url do
+    OauthAzureActivedirectory.request_url()
   end
 end

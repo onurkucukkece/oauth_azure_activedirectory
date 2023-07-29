@@ -7,11 +7,11 @@ defmodule OauthAzureActivedirectoryTest.Client do
   alias OauthAzureActivedirectory.Error
   alias OauthAzureActivedirectory.Response
 
-  describe "logout_url" do
+  describe "logout_url(logout_hint \\ nil)" do
     test "returns logout url" do
       app_config = Application.get_env(:oauth_azure_activedirectory, OauthAzureActivedirectory.Client)
-      auth_url = OauthAzureActivedirectory.Client.logout_url
-      url = URI.parse auth_url
+      logout_url = OauthAzureActivedirectory.Client.logout_url()
+      url = URI.parse logout_url
 
       assert url.host == "login.microsoftonline.com"
       assert url.path == "/#{app_config[:tenant]}/oauth2/v2.0/logout"
@@ -19,7 +19,14 @@ defmodule OauthAzureActivedirectoryTest.Client do
 
       url_query = URI.decode_query(url.query)
       assert url_query["client_id"] == app_config[:client_id]
-      assert url_query["post_logout_redirect_uri"] == app_config[:redirect_uri]
+      assert url_query["post_logout_redirect_uri"] == app_config[:logout_redirect_url]
+    end
+
+    test "returns logout url with logout hint" do
+      logout_url = OauthAzureActivedirectory.Client.logout_url("logout-hint")
+      url = URI.parse logout_url
+      url_query = URI.decode_query(url.query)
+      assert url_query["logout_hint"] == "logout-hint"
     end
   end
 
