@@ -69,7 +69,7 @@ defmodule MyAppWeb.AuthController do
   end
 
   def callback(conn, _params) do
-    {:ok, payload} = Client.callback_params(conn)
+    {:ok, payload} = Client.callback_params(conn.params)
     email = payload["email"]
     case User.find_or_create(email) do
       {:ok, user} ->
@@ -111,7 +111,7 @@ To make sure that the users end their session in your application, you can do on
   Once users sign out from their Microsoft account, a silent request will be sent to logout URL with a `sid` attribute in query parameters which matches the `session_state` that was sent in callback payload. 
 - Add `logout_hint` to logout URL. That will sign users out from their Microsoft account without allowing them to choose which user to logout. This somehow fixes broken redirection. To do that
   1. Add `login_hint` optional ID claim to your Azure application as descibed [here](https://learn.microsoft.com/en-us/azure/active-directory/develop/optional-claims). This will add `login_hint` attribute to callback payload.
-  2. Store the hint along with user session
+  2. Store the hint along with user session/cookies
   3. Pass it to `OauthAzureActivedirectory.Client.logout_url(logout_hint)` function 
 
 ## Information

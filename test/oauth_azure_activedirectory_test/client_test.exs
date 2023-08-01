@@ -68,8 +68,9 @@ defmodule OauthAzureActivedirectoryTest.Client do
       do
         payload = %{"c_hash" => "MeUkiAQXgYSiaiAYZacYEA"}
         payload_encoded = payload |> JSON.encode! |> Base.url_encode64(padding: false)
-        params = %{params: %{"id_token" => "e30.#{payload_encoded}.", "code" => "code"}}
+        params = %{"id_token" => "e30.#{payload_encoded}.", "code" => "code"}
         assert {:ok, payload} == Client.callback_params(params)
+        assert {:ok, payload} == Client.callback_params(%{params: params})
       end
     end
 
@@ -81,7 +82,7 @@ defmodule OauthAzureActivedirectoryTest.Client do
           verify_signature: fn(_, _, _) -> true end
         ]
       do
-        params = %{params: %{"id_token" => "e30.e30.", "code" => "code"}}
+        params = %{"id_token" => "e30.e30.", "code" => "code"}
         assert {:error, %Error{module: Client, reason: :invalid_code}} == Client.callback_params(params)
       end
     end
@@ -94,7 +95,7 @@ defmodule OauthAzureActivedirectoryTest.Client do
           verify_signature: fn(_, _, _) -> true end
         ]
       do
-        params = %{params: %{"id_token" => "e30.e30.", "code" => "code"}}
+        params = %{"id_token" => "e30.e30.", "code" => "code"}
         assert {:error, %Error{module: Client, reason: :invalid_client}} == Client.callback_params(params)
       end
     end
@@ -107,7 +108,7 @@ defmodule OauthAzureActivedirectoryTest.Client do
           verify_signature: fn(_, _, _) -> false end
         ]
       do
-        params = %{params: %{"id_token" => "e30.e30.", "code" => "code"}}
+        params = %{"id_token" => "e30.e30.", "code" => "code"}
         assert {:error, %Error{module: Client, reason: :invalid_signature}} == Client.callback_params(params)
       end
     end

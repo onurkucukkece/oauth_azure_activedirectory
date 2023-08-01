@@ -16,7 +16,7 @@ defmodule OauthAzureActivedirectory.Client do
   def logout_url(logout_hint \\ nil) do
     params = %{
       client_id: configset()[:client_id],
-      post_logout_redirect_uri: configset()[:logout_redirect_url] # || configset()[:redirect_uri]
+      post_logout_redirect_uri: configset()[:logout_redirect_url]
     }
 
     params = case logout_hint do
@@ -61,23 +61,17 @@ defmodule OauthAzureActivedirectory.Client do
     AuthCode.authorize_url(client, params)
   end
 
-  def client do
-  	Client.new([
-      strategy: __MODULE__,
-      client_id: configset()[:client_id],
-      client_secret: configset()[:client_secret],
-      redirect_uri: configset()[:redirect_uri],
-      logout_redirect_url: configset()[:logout_redirect_url],
-      authorize_url: "#{request_url()}/authorize",
-      token_url: "#{request_url()}/token"
-    ])
+  @doc since: "1.2.1"
+  @deprecated "Check documentation for new usage"
+  def callback_params(%{params: %{"id_token" => id_token, "code" => code}}) do
+    callback_params(%{"id_token" => id_token, "code" => code})
   end
 
   @doc """
   Validate token and return payload attributes in JWT
 
   """
-  def callback_params(%{params: %{"id_token" => id_token, "code" => code}}) do
+  def callback_params(%{"id_token" => id_token, "code" => code}) do
     claims = id_token |> String.split(".")
 
     header = Enum.at(claims, 0) |> Base.url_decode64!(padding: false) |> JSON.decode!()
@@ -102,6 +96,18 @@ defmodule OauthAzureActivedirectory.Client do
   end
 
   defdelegate process_callback!(params), to: __MODULE__, as: :callback_params
+
+  defp client do
+  	Client.new([
+      strategy: __MODULE__,
+      client_id: configset()[:client_id],
+      client_secret: configset()[:client_secret],
+      redirect_uri: configset()[:redirect_uri],
+      logout_redirect_url: configset()[:logout_redirect_url],
+      authorize_url: "#{request_url()}/authorize",
+      token_url: "#{request_url()}/token"
+    ])
+  end
 
   defp configset do
     OauthAzureActivedirectory.config()
