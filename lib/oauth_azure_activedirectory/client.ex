@@ -98,7 +98,7 @@ defmodule OauthAzureActivedirectory.Client do
   defdelegate process_callback!(params), to: __MODULE__, as: :callback_params
 
   defp client do
-  	Client.new([
+    Client.new([
       strategy: __MODULE__,
       client_id: configset()[:client_id],
       client_secret: configset()[:client_secret],
