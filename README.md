@@ -58,7 +58,13 @@ defmodule MyAppWeb.AuthController do
 
   def authorize(conn, _params) do
     redirect conn, external: Client.authorize_url!()
-    # Alternatively, you can pass a custom state to identify multiple requests/callbacks
+
+    # Alternatively, you can pass a custom state to identify multiple requests/callbacks.
+    # This value will be returned by Azure AD in the token response under the "state" key.
+    # It is commonly used to prevent CSRF attacks by sending a cryptographically random value.
+    # You can also encode information about the user's state before authentication,
+    # for example the page or view they were on, or any context you need to restore later.
+
     # redirect conn, external: Client.authorize_url!("custom-state")
   end
 
