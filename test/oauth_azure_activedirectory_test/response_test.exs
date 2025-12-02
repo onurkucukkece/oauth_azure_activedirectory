@@ -3,12 +3,12 @@ defmodule OauthAzureActivedirectoryTest.Response do
 
   import Mock
 
-  alias OauthAzureActivedirectory.Response
   alias OauthAzureActivedirectory.Http
+  alias OauthAzureActivedirectory.Response
 
   defmacro with_signature_mock(block) do
     quote do
-      with_mock Http, 
+      with_mock Http,
         [request: fn (url) ->
           request = url |> String.split("/") |> Enum.reverse |> Enum.at(0)
           case request do
@@ -57,7 +57,7 @@ defmodule OauthAzureActivedirectoryTest.Response do
           "exp" => now + 60,
           "iat" => now - 60,
           "tid" => "042153ca-e0a2-45ba-b335-9e9a06632174"
-        } 
+        }
         assert true == Response.verify_client(payload)
       end
     end
@@ -73,7 +73,7 @@ defmodule OauthAzureActivedirectoryTest.Response do
           "exp" => now - 60,
           "iat" => now - 60,
           "tid" => "042153ca-e0a2-45ba-b335-9e9a06632174"
-        } 
+        }
         assert false == Response.verify_client(payload)
       end
     end
