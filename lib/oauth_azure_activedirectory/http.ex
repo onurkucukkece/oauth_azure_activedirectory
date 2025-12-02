@@ -8,8 +8,10 @@ defmodule OauthAzureActivedirectory.Http do
 
   """
   def request(url) do
-    cacert =  :code.priv_dir(:oauth_azure_activedirectory) ++ ~c"/DigiCertGlobalRootCA.crt.pem"
-    :httpc.set_options(socket_opts: [verify: :verify_peer, cacertfile: cacert])
+    cacert = :code.priv_dir(:oauth_azure_activedirectory) ++ '/DigiCertGlobalRootCA.crt.pem' |> File.read!
+    cacerts = :public_key.pem_decode(cacert) |> Enum.map(fn {_, der, _} -> der end)
+
+    :httpc.set_options(socket_opts: [verify: :verify_peer, cacerts: cacerts])
 
     case :httpc.request(:get, {to_charlist(url), []}, [], []) do
       {:ok, response} ->

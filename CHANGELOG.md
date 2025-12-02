@@ -5,6 +5,7 @@
 ### Added or Changed
 - added Changelog
 - introduced `callback_params/1` function without params key in parameter
+- fixed cacertfile are ignored warning
 
 ### Deprecated
 - deprecated usage of `callback_params/1` function with params key in Map parameter
