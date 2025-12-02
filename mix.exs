@@ -30,7 +30,7 @@ defmodule OauthAzureActivedirectory.Mixfile do
     [
       {:oauth2, "~> 2.0"},
       {:json, "~> 1.0"},
-      {:secure_random, "~> 0.5"},
+      {:secure_random, "~> 0.5.1"},
       {:ex_doc, "~> 0.19", only: :dev},
       {:mock, "~> 0.3.0", only: :test},
       {:excoveralls, "~> 0.10", only: :test},
