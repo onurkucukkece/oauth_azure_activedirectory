@@ -10,8 +10,7 @@ defmodule OauthAzureActivedirectory.Mixfile do
       deps: deps(),
       package: package(),
       description: description(),
-      test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [coveralls: :test, "coveralls.detail": :test, "coveralls.circle": :test, "coveralls.html": :test]
+      test_coverage: [tool: ExCoveralls]
     ]
   end
 
@@ -20,6 +19,10 @@ defmodule OauthAzureActivedirectory.Mixfile do
     [
       extra_applications: [:logger]
     ]
+  end
+
+  def cli do
+    [preferred_envs: [coveralls: :test, "coveralls.detail": :test, "coveralls.circle": :test, "coveralls.html": :test]]
   end
 
   # Run "mix help deps" to learn about dependencies.
@@ -31,7 +34,7 @@ defmodule OauthAzureActivedirectory.Mixfile do
       {:ex_doc, "~> 0.19", only: :dev},
       {:mock, "~> 0.3.0", only: :test},
       {:excoveralls, "~> 0.10", only: :test},
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
 
