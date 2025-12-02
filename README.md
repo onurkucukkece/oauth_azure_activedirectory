@@ -4,7 +4,6 @@ Omniauth client for Azure Active Directory using [Microsoft identity hybrid auth
 
 https://hex.pm/packages/oauth_azure_activedirectory
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/onurkucukkece/oauth_azure_activedirectory/tree/master.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/onurkucukkece/oauth_azure_activedirectory/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/onurkucukkece/oauth_azure_activedirectory/badge.svg)](https://coveralls.io/github/onurkucukkece/oauth_azure_activedirectory)
 [![Hex.pm version](https://img.shields.io/hexpm/v/oauth_azure_activedirectory.svg?style=flat-square)](https://hex.pm/packages/oauth_azure_activedirectory)
 [![Hex.pm downloads](https://img.shields.io/hexpm/dt/oauth_azure_activedirectory.svg)](https://hex.pm/packages/oauth_azure_activedirectory)
