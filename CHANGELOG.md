@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.2.1
+## v1.2.2
 
 ### Added or Changed
 - added Changelog
@@ -8,6 +8,15 @@
 
 ### Deprecated
 - deprecated usage of `callback_params/1` function with params key in Map parameter
+
+## v1.2.1 - (2025-12-02)
+
+### Added or Changed
+- replaced CircleCI with Github workflow
+- updated `credo` to v1.7 and use it in strict mode
+- updated `secure_random` to v0.5.1
+- fixed deprecation warnings about single quotes
+- added more context to readme about custom state param
 
 ## v1.2.0 - (2023-07-29)
 
