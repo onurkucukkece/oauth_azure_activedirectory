@@ -61,6 +61,10 @@ defmodule OauthAzureActivedirectory.Client do
     AuthCode.authorize_url(client, params)
   end
 
+  @doc """
+  Validate token and return payload attributes in JWT
+
+  """
   @doc since: "1.2.2"
   @deprecated "Check documentation for new usage."
   def callback_params(%{params: %{"id_token" => id_token, "code" => code}}) do
@@ -95,6 +99,10 @@ defmodule OauthAzureActivedirectory.Client do
     end
   end
 
+  @doc """
+  Validate token and return payload attributes in JWT
+
+  """
   defdelegate process_callback!(params), to: __MODULE__, as: :callback_params
 
   defp client do

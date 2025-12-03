@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.2.3 - (2025-12-03)
+
+### Added or Changed
+- updated documentation
+- updated readme and introduced `process_callback!/1` method
+
 ## v1.2.2 - (2025-12-03)
 
 ### Added or Changed
