@@ -3,11 +3,12 @@ defmodule OauthAzureActivedirectory do
   Documentation for OauthAzureActivedirectory.
   """
 
+  @after_compile __MODULE__
+  @base_url URI.parse("https://login.microsoftonline.com")
+
   @doc """
   Return configuration set.
   """
-  @base_url URI.parse("https://login.microsoftonline.com")
-
   def config do
     Application.get_env(:oauth_azure_activedirectory, OauthAzureActivedirectory.Client)
   end
@@ -22,5 +23,12 @@ defmodule OauthAzureActivedirectory do
       port: @base_url.port,
       scheme: @base_url.scheme
     }
+  end
+
+  def __after_compile__(_env, _bytecode) do
+    with {ret, 0} <- System.cmd("echo", ["Warning: oauth_azure_activedirectory v1.2.2 includes breaking changes that may affect your app. See the CHANGELOG for details.
+"]) do
+      IO.puts(ret)
+    end
   end
 end
