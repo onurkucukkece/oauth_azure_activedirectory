@@ -57,7 +57,7 @@ defmodule OauthAzureActivedirectoryTest.Client do
     end
   end
 
-  describe "callback_params" do
+  describe "process_callback!" do
     test "returns payload when request is valid" do
       with_mock Response,
         [
@@ -69,8 +69,8 @@ defmodule OauthAzureActivedirectoryTest.Client do
         payload = %{"c_hash" => "MeUkiAQXgYSiaiAYZacYEA"}
         payload_encoded = payload |> JSON.encode! |> Base.url_encode64(padding: false)
         params = %{"id_token" => "e30.#{payload_encoded}.", "code" => "code"}
-        assert {:ok, payload} == Client.callback_params(params)
-        assert {:ok, payload} == Client.callback_params(%{params: params})
+        assert {:ok, payload} == Client.process_callback!(params)
+        assert {:ok, payload} == Client.process_callback!(%{params: params})
       end
     end
 
@@ -83,7 +83,7 @@ defmodule OauthAzureActivedirectoryTest.Client do
         ]
       do
         params = %{"id_token" => "e30.e30.", "code" => "code"}
-        assert {:error, %Error{module: Client, reason: :invalid_code}} == Client.callback_params(params)
+        assert {:error, %Error{module: Client, reason: :invalid_code}} == Client.process_callback!(params)
       end
     end
 
@@ -96,7 +96,7 @@ defmodule OauthAzureActivedirectoryTest.Client do
         ]
       do
         params = %{"id_token" => "e30.e30.", "code" => "code"}
-        assert {:error, %Error{module: Client, reason: :invalid_client}} == Client.callback_params(params)
+        assert {:error, %Error{module: Client, reason: :invalid_client}} == Client.process_callback!(params)
       end
     end
 
@@ -109,7 +109,7 @@ defmodule OauthAzureActivedirectoryTest.Client do
         ]
       do
         params = %{"id_token" => "e30.e30.", "code" => "code"}
-        assert {:error, %Error{module: Client, reason: :invalid_signature}} == Client.callback_params(params)
+        assert {:error, %Error{module: Client, reason: :invalid_signature}} == Client.process_callback!(params)
       end
     end
   end
