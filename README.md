@@ -121,7 +121,7 @@ Client.authorize_url!()
 # will generate a url similar to 
 # https://login.microsoftonline.com/9b9eff0c-3e5t-1q2w-3e4r-fe98afcd0299/oauth2/v2.0/authorize?client_id=984ebc2a-4ft5-8ea2-0000-59e43ccd614e&nonce=e22d15fa-853f-4d6a-9215-e2a206f48581&provider=azureactivedirectory&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fauth%2Fazureactivedirectory%2Fcallback&response_mode=form_post&response_type=code+id_token
 
-{:ok, payload} = Client.callback_params(conn)
+{:ok, payload} = Client.callback_params(conn.params)
 # On a successful callback, jwt variable will return something like below.
 
 %{
