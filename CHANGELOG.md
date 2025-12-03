@@ -1,10 +1,11 @@
 # Changelog
 
-## v1.2.2
+## v1.2.2 - (2025-12-03)
 
 ### Added or Changed
 - added Changelog
 - introduced `callback_params/1` function without params key in parameter
+- changed `OauthAzureActivedirectory.Client.client` method to private
 - fixed cacertfile are ignored warning
 
 ### Deprecated

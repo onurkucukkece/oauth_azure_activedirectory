@@ -62,7 +62,7 @@ defmodule OauthAzureActivedirectory.Client do
   end
 
   @doc since: "1.2.2"
-  @deprecated "Check documentation for new usage"
+  @deprecated "Check documentation for new usage."
   def callback_params(%{params: %{"id_token" => id_token, "code" => code}}) do
     callback_params(%{"id_token" => id_token, "code" => code})
   end

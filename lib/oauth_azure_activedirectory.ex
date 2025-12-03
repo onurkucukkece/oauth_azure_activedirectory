@@ -3,11 +3,11 @@ defmodule OauthAzureActivedirectory do
   Documentation for OauthAzureActivedirectory.
   """
 
+  @base_url URI.parse("https://login.microsoftonline.com")
+
   @doc """
   Return configuration set.
   """
-  @base_url URI.parse("https://login.microsoftonline.com")
-
   def config do
     Application.get_env(:oauth_azure_activedirectory, OauthAzureActivedirectory.Client)
   end
